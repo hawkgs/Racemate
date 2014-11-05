@@ -27,6 +27,56 @@
             get { return this.GetRepository<InvitationCode>(); } 
         }
 
+        public IRepository<CarMake> CarMakes
+        {
+            get { return this.GetRepository<CarMake>(); }
+        }
+
+        public IRepository<CarModel> CarModels
+        {
+            get { return this.GetRepository<CarModel>(); }
+        }
+
+        public IRepository<Car> Cars
+        {
+            get { return this.GetRepository<Car>(); }
+        }
+
+        public IRepository<Race> Races
+        {
+            get { return this.GetRepository<Race>(); }
+        }
+
+        public IRepository<RaceRoutePoint> RaceRoutePoints
+        {
+            get { return this.GetRepository<RaceRoutePoint>(); }
+        }
+
+        public IRepository<RaceParticipant> RaceParticipants
+        {
+            get { return this.GetRepository<RaceParticipant>(); }
+        }
+
+        public IRepository<RaceSpectator> RaceSpectators
+        {
+            get { return this.GetRepository<RaceSpectator>(); }
+        }
+
+        public IRepository<RaceChatMessage> RaceChatMessages
+        {
+            get { return this.GetRepository<RaceChatMessage>(); }
+        }
+
+        public IRepository<Report> Reports
+        {
+            get { return this.GetRepository<Report>(); }
+        }
+
+        public IRepository<Notification> Notifications
+        {
+            get { return this.GetRepository<Notification>(); }
+        }
+
         public int SaveChanges()
         {
             return this.context.SaveChanges();

@@ -19,5 +19,25 @@
         }
 
         public IDbSet<InvitationCode> InvitationCodes { get; set; }
+
+        public IDbSet<CarMake> CarMakes { get; set; }
+
+        public IDbSet<CarModel> CarModels { get; set; }
+
+        public IDbSet<Car> Cars { get; set; }
+
+        public IDbSet<Race> Races { get; set; }
+
+        public IDbSet<RaceRoutePoint> RaceRoutePoints { get; set; }
+
+        public IDbSet<RaceParticipant> RaceParticipants { get; set; }
+
+        public IDbSet<RaceSpectator> RaceSpectators { get; set; }
+
+        public IDbSet<RaceChatMessage> RaceChatMessages { get; set; }
+
+        public IDbSet<Report> Reports { get; set; }
+
+        public IDbSet<Notification> Notifications { get; set; }
     }
 }
