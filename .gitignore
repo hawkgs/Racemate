@@ -1,0 +1,28 @@
+ User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# Build results
+
+Content/
+Scripts/
+packages/
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+[Bb]in/
+[Oo]bj/
+Properties/
+
+
+*.Debug.Config
+*.Release.Config
+Web.Config
+
+*.sln
+*.dat
+*.dat.tmp
+*.njsproj
+*.csproj
