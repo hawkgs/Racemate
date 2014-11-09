@@ -27,9 +27,9 @@
 
         public bool IsBanned { get; set; }
 
-        //public int InvitationCodeId { get; set; }
+        public int InvitationCodeId { get; set; }
 
-        //public virtual InvitationCode InvitationCode { get; set; }
+        public virtual InvitationCode InvitationCode { get; set; }
 
         public int FirstPlaces { get; set; }
 

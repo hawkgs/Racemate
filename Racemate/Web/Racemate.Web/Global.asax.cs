@@ -10,6 +10,7 @@
     using Racemate.Web.Infrastructure.Mapping;
     using System.Reflection;
     using Racemate.Web.App_Start;
+    using Racemate.Data;
 
     public class MvcApplication : System.Web.HttpApplication
     {
@@ -23,6 +24,9 @@
 
             var autoMapperConfig = new AutoMapperConfig(Assembly.GetExecutingAssembly());
             autoMapperConfig.Execute();
+
+            RacemateDbContext ctx = new RacemateDbContext();
+            var test = ctx.Notifications.ToList();
         }
     }
 }

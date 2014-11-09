@@ -49,9 +49,8 @@ namespace Racemate.Web.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "Username")]
+        public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -64,6 +63,12 @@ namespace Racemate.Web.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [StringLength(25, MinimumLength = 4)]
+        [Display(Name = "Username")]
+        [DataType(DataType.Text)]
+        public string Username { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -79,6 +84,12 @@ namespace Racemate.Web.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
+        [StringLength(10, MinimumLength = 10)]
+        [Display(Name = "Invitation Code")]
+        public string InvitationCode { get; set; }
     }
 
     public class ResetPasswordViewModel
