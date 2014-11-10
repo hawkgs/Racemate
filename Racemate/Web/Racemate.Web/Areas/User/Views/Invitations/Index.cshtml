@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Racemate.Web.Areas.User.ViewModels.Invitations.InvitationsViewModel
+@{
     ViewBag.Title = "Invitations";
 }
 
@@ -12,3 +13,50 @@
         <input type="submit" value="Generate Code" class="green" />
     }
 </h2>
+<div class="holder">
+    <table class="grid">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Issued On</th>
+                <th>In Use By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var code in Model.Codes)
+            {
+                <tr>
+                    <td>@code.Code</td>
+                    <td>@code.CreatedOn</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(code.User))
+                        {
+                            <span class="grey">N/A</span>
+                        }
+                        else
+                        {
+                            @code.User
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pager">
+        @for (int page = 1; page <= Model.PageCount; page++)
+        {
+            string selectedClass = String.Empty;
+            
+            if (page == Model.CurrentPage)
+            {
+                selectedClass = "current-page";
+            }
+            
+            @Html.ActionLink(page.ToString(), "Index", "Invitations", new { page = page }, new { @class = selectedClass })
+        }
+    </div>
+</div>
+
+@section styles {
+    @Styles.Render("~/Content/grids")
+}

@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using Generators;
 using Racemate.Data.Models;
+using Racemate.Web.Areas.User.ViewModels.Invitations;
+using AutoMapper.QueryableExtensions;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -18,14 +20,37 @@ namespace Racemate.Web.Areas.User.Controllers
         {
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
+            int pageParam = this.GetPage(page);
+
             if (this.TempData["ViewData"] != null)
             {
                 this.ViewData = (ViewDataDictionary)this.TempData["ViewData"];
             }
 
-            return View();
+            // Custom mapping
+            AutoMapper.Mapper.CreateMap<InvitationCode, InvitationCodeViewModel>()
+                .ForMember(dest => dest.User,
+                           opts => opts.MapFrom(src => src.User.UserName));
+
+            var invitationCodes = this.data.InvitationCodes.All()
+                .Where(i => i.CreatorId == this.CurrentUser.Id);
+
+            var mappedCodes = invitationCodes
+                .OrderByDescending(i => i.CreatedOn)
+                .Skip(pageParam * PAGE_SIZE)
+                .Take(PAGE_SIZE)
+                .Project().To<InvitationCodeViewModel>();
+
+            int pageCount = invitationCodes
+                .Count() / PAGE_SIZE;
+
+            return View(new InvitationsViewModel() {
+                Codes = mappedCodes,
+                PageCount = pageCount,
+                CurrentPage = pageParam + 1
+            });
         }
 
         [HttpPost]

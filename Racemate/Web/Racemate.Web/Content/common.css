@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 
 html, body, p, h1, h2, h3, h4, h5, h6, header, footer, section, aside, nav, article, hr, ul, ol, dl {
     margin: 0;
@@ -70,6 +70,10 @@ a.neutral {
 
 .thin {
     font-weight: 300;
+}
+
+span.grey {
+    color: #798991;
 }
 
 body {
