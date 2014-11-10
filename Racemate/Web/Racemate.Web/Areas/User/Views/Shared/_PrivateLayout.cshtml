@@ -5,13 +5,16 @@
 
 <header id="main-header">
     <div id="header-content">
-        <a href="@Url.Action("Index", "Home")" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
+        <a href="@Url.Action("Index", "Home", new { Area = "User" })" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
         <div id="authenticated" class="pull-right relative">
             <nav id="menu">
                 <div class="nav-item create-race" title="Create Race"><span>New Race</span></div>
                 <div class="nav-item races" title="Races"></div>
                 <div class="nav-item members" title="Members"></div>
-                <div class="nav-item reports" title="Reports"></div>
+                @if(User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("Index", "Reports", new { Area = "Administration" })" class="nav-item reports"></a>
+                }
                 <div class="nav-item notifications" title="Notifications">
                     <div class="indicator">4</div>
                     <div class="header-menu-holder notific">
@@ -39,10 +42,10 @@
                     <ul>
                         <li><a href="#">My Profile</a></li>
                         <li><a href="#">My Races</a></li>
-                        <li><a href="#">Garage</a></li>
+                        <li>@Html.ActionLink("Garage", "All", "Garage", new { Area = "User" })</li>
                         <li><a href="#">Invitations</a></li>
                         <li>
-                            @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                            @using (Html.BeginForm("LogOff", "Account", new { Area = "" }, FormMethod.Post, new { id = "logoutForm" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a>

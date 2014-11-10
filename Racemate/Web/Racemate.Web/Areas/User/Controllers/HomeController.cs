@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Racemate.Data;
+using Racemate.Web.Controllers.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Racemate.Web.Controllers.Common;
-using Racemate.Data;
 
-namespace Racemate.Web.Areas.Users.Controllers
+namespace Racemate.Web.Areas.User.Controllers
 {
     [Authorize]
     public class HomeController : BaseController
@@ -18,8 +18,6 @@ namespace Racemate.Web.Areas.Users.Controllers
 
         public ActionResult Index()
         {
-            var test = this.data.InvitationCodes.All().ToList();
-
             return View();
         }
     }

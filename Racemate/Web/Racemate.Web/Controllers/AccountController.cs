@@ -48,7 +48,7 @@ namespace Racemate.Web.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { Area = "User" });
             }
 
             ViewBag.ReturnUrl = returnUrl;
@@ -84,7 +84,7 @@ namespace Racemate.Web.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home", new { Area = "User" });
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -103,7 +103,7 @@ namespace Racemate.Web.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Home", new { Area = "User" });
             }
 
             return View();
@@ -153,7 +153,7 @@ namespace Racemate.Web.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home", new { Area = "User" });
                 }
                 AddErrors(result);
             }

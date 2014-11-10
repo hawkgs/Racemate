@@ -89,6 +89,7 @@ h4 {
     opacity: 0.75;
     transition: all 0.3s ease;
     margin-right: 10px;
+    display: block;
     cursor: pointer;
 }
 
