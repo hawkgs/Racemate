@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Invitations";
+}
+
+@Html.ValidationSummary(true, "", new { @class = "msg-list error" })
+
+<h2>
+    @ViewBag.Title
+    @using (Html.BeginForm("GenerateCode", "Invitations", FormMethod.Post, new { @class = "pull-right" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="submit" value="Generate Code" class="green" />
+    }
+</h2>

@@ -35,17 +35,15 @@ $(function() {
     });
 
     $(document).click(function(e) {
-        //if ($(e.target).closest(".header-menu-holder").length > 0) {
-        //    return false;
-        //} else {
-        //    $profileMenu.hide();
-        //    $notifications.hide();
+        if (!($(e.target).closest(".header-menu-holder").length > 0)) {
+            $profileMenu.hide();
+            $notifications.hide();
 
-        //    if ($notificationBtn.hasClass(CLICKED_CLASS)) {
-        //        $notificationBtn.removeClass(CLICKED_CLASS);
-        //    }
+            if ($notificationBtn.hasClass(CLICKED_CLASS)) {
+                $notificationBtn.removeClass(CLICKED_CLASS);
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
     });
 });

@@ -126,8 +126,7 @@ namespace Racemate.Web.Controllers
 
             if (invitationCode == null)
             {
-                // TODO: Add error msg
-                // Error
+                ModelState.AddModelError("", "The provided invitation code is invalid or already in use.");
             }
             else if (ModelState.IsValid)
             {
