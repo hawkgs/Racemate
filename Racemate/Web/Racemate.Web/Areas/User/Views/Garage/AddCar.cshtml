@@ -1,0 +1,124 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Garage.AddCarViewModel
+@{
+    ViewBag.Title = "Add New Car";
+}
+
+<h2>Garage</h2>
+<div class="holder">
+    <section class="side container add-car-side"></section>
+    <section class="content container relative">
+        @using (Html.BeginForm("AddCar", "Garage", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            
+            <fieldset>
+                <legend>@ViewBag.Title</legend>
+
+                @Html.ValidationSummary(true, "", new { @class = "msg-list error" })
+                @Html.ValidationMessageFor(m => m.Weight, "", new { @class = "msg error" })
+
+                <div class="row">
+                    <p class="title">Car model and make</p>
+                    <div class="col extra-margin">
+                        <label for="car-makes-select">Make</label>
+                        @Html.DropDownList(
+                            "CarMakeId",
+                            Model.CarMakes.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString() }),
+                            String.Empty,
+                            new { id = "car-makes-select" }
+                        )
+                    </div>
+                    <div class="col">
+                        <label for="car-model-select">Model</label>
+                        <select id="car-model-select" name="CarModelId">
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="title">General information</p>
+                    <div class="col">
+                        @Html.LabelFor(m => m.Hp)
+                        @Html.EditorFor(m => m.Hp) hp
+                    </div>
+                    <div class="col">
+                        @Html.LabelFor(m => m.Weight)
+                        @Html.EditorFor(m => m.Weight) kg
+                    </div>
+                    <div class="col">
+                        @Html.LabelFor(m => m.Torque)
+                        @Html.EditorFor(m => m.Torque) N&CenterDot;m
+                    </div>
+                    <div class="col">
+                        @Html.LabelFor(m => m.EngineAspiration)
+                        @Html.EnumDropDownListFor(m => m.EngineAspiration)
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="title">Miscellaneous (optional)</p>
+                    <div class="col">
+                        @Html.LabelFor(m => m.EngineDisplacement)
+                        @Html.EditorFor(m => m.EngineDisplacement) cc
+                    </div>
+                    <div class="col">
+                        <label for="year">Year of Production</label>
+                        <select id="year" name="YearOfProduction">
+                            @for (int year = DateTime.Now.Year; year >= Model.MinimalCarYear; year--)
+                            {
+                                <option value="@year">@year</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col border">
+                        @Html.LabelFor(m => m.IsLaunchControlMounted)
+                        @Html.EditorFor(m => m.IsLaunchControlMounted)
+                    </div>
+                    <div class="col border">
+                        @Html.LabelFor(m => m.IsAntilagMounted)
+                        @Html.EditorFor(m => m.IsAntilagMounted)
+                    </div>
+                    <div class="col border">
+                        @Html.LabelFor(m => m.IsN2oMounted)
+                        @Html.EditorFor(m => m.IsN2oMounted)
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(m => m.RaceTypesList)
+                    @Html.ListBoxFor(m => m.SelectedRaceTypes, Model.RaceTypesList)
+                </div>
+                <div class="row">
+                    <input type="submit" class="green" value="Add Car" />
+                </div>
+            </fieldset>
+        }
+    </section>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $("#car-makes-select").change(function () {
+            var $carModelSelect = $("#car-model-select");
+
+            $.ajax({
+                url: "/User/Garage/MakeModels",
+                method: "GET",
+                data: { makeId: $(this).val() },
+                success: function (models) {
+                    $carModelSelect.html("");
+
+                    models.forEach(function (item) {
+                        var option = $("<option>").val(item.Id).text(item.Name);
+
+                        $carModelSelect.append(option);
+                    });
+                },
+                error: function () {
+                    console.log("An error occurred while processing data.");
+                }
+            });
+        });
+    </script>
+}

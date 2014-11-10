@@ -2,5 +2,8 @@
     ViewBag.Title = "Garage";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>
+    @ViewBag.Title
+    @Html.ActionLink("Add Car", "AddCar", "Garage", new { }, new { @class = "button green pull-right" })
+</h2>
 

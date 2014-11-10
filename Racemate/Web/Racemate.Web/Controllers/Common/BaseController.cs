@@ -7,6 +7,8 @@
 
     public class BaseController : Controller
     {
+        protected const int PAGE_SIZE = 10;
+
         protected readonly IRacemateData data;
 
         protected virtual User CurrentUser
@@ -21,6 +23,18 @@
         public BaseController(IRacemateData data)
         {
             this.data = data;
+        }
+
+        protected int GetPage(int? page)
+        {
+            int pageParam = 0;
+
+            if (page.HasValue && page > 0)
+            {
+                pageParam = page.Value - 1;
+            }
+
+            return pageParam;
         }
     }
 }

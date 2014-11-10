@@ -50,5 +50,15 @@ table.grid span.sorter:hover {
 }
 
 .pager {
+    margin-top: 15px;
+    font-size: 22px;
+}
 
+.pager > a {
+    margin-right: 10px;
+    color: #d1cdc8;
+}
+
+.pager > a.current-page {
+    color: #e57f00;
 }
