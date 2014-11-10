@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="description" content="RACEMATE - Closed community portal" />
+    <meta name="keywords" content="race,racemate" />
+    <meta name="author" content="Georgi Serev" />
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <title>Racemate &bull; @ViewBag.Title</title>
+    @RenderSection("masterStyles", required: true)
+    <link href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700,300" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("masterScripts", required: true)
+</body>
+</html>

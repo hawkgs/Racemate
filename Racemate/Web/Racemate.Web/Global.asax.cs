@@ -24,9 +24,6 @@
 
             var autoMapperConfig = new AutoMapperConfig(Assembly.GetExecutingAssembly());
             autoMapperConfig.Execute();
-
-            RacemateDbContext ctx = new RacemateDbContext();
-            var test = ctx.Notifications.ToList();
         }
     }
 }
