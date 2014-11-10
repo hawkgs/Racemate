@@ -1,0 +1,149 @@
+#race-countdown {
+    font-size: 50px;
+    font-weight: 300;
+    border-radius: 5px;
+    background: #181a1c;
+    text-align: center;
+    color: #ff9600;
+    text-shadow: 0 0 7px rgba(255, 150, 0, 0.8);
+    box-shadow: inset 0 0 15px 0 rgba(0, 0, 0, 0.6);
+}
+
+#countdown-info {
+    text-align: center;
+    font-size: 14px;
+    color: #616a6e;
+    margin: 5px 0;
+}
+
+#race-page-title > .pull-right {
+    margin-right: 10px;
+}
+
+#race-type {
+    position: relative;
+    background: url(../img/icons/rc_types_large.png);
+    width: 78px; height: 78px;
+    margin: 0 auto;
+}
+
+.race-title {
+    text-align: center;
+}
+
+#race-type.rally {
+    background-position: 0 0;
+}
+
+#race-type.drag {
+    background-position: 0 -78px;
+}
+
+#race-type.time-attack {
+    background-position: 0 -156px;
+}
+
+#race-type.race {
+    background-position: 0 -234px;
+}
+
+#race-type.drift {
+    background-position: 0 -312px;
+}
+
+#race-status {
+    position: relative;
+    margin: 0 auto;
+    text-align: center;
+}
+
+table.positions, table.race-details {
+    width: 100%;
+    border-spacing: 0;
+}
+
+table.positions th, table.positions td {
+    padding: 2px 5px;
+}
+
+table.positions th {
+    text-align: left;
+    border-bottom: 1px solid #1a1c1d;
+}
+
+table.positions tbody tr:nth-child(2n) {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+table.race-details tr > td:first-child {
+    white-space: nowrap;
+    padding-right: 5px;
+    font-weight: 300;
+    color: #676f73;
+}
+
+#evaluation {
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+#evaluation > div {
+    float: left;
+    width: 33%;
+}
+
+#evaluation p {
+    text-align: center;
+}
+
+#evaluation > div > p:first-child {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    font-weight: bold;
+}
+
+#evaluation > div > p:last-child {
+    color: #676f73;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.7);
+}
+
+/***/
+
+#chat {
+    padding: 0;
+}
+
+#chat > ul.messages {
+    height: 325px;
+    list-style-type: none;
+    font-size: 15px;
+    overflow-y: scroll;
+}
+
+#chat > .input {
+    border-top: 1px solid #373b3e;
+    padding: 7px 8px;
+}
+
+#chat input[type="text"]:focus {
+    box-shadow: inset 0 0 7px 0 rgba(0, 0, 0, 0.6);
+}
+
+#chat > ul.messages > li {
+    padding: 5px 7px;
+    background: #25282a;
+    border-top: 1px solid #303336;
+    border-bottom: 1px solid #141617;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+    background: -moz-linear-gradient(top,  #25282a 0%, #1e2122 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#25282a), color-stop(100%,#1e2122));
+    background: -webkit-linear-gradient(top,  #25282a 0%,#1e2122 100%);
+    background: -o-linear-gradient(top,  #25282a 0%,#1e2122 100%);
+    background: -ms-linear-gradient(top,  #25282a 0%,#1e2122 100%);
+    background: linear-gradient(to bottom,  #25282a 0%,#1e2122 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#25282a', endColorstr='#1e2122',GradientType=0 );
+}
+
+#chat strong {
+    margin-right: 6px;
+    color: #677277;
+}

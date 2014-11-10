@@ -1,0 +1,27 @@
+.msg, .msg-list > ul > li {
+    padding: 10px 12px;
+    font-size: 18px;
+    font-weight: 300;
+    border: 2px dotted;
+    margin-bottom: 10px;
+}
+
+.msg-list > ul {
+    list-style-type: none;
+}
+
+.error {
+    color: #dd4d46;
+}
+
+.success {
+    color: #4fcd18;
+}
+
+.note {
+    color: #009eb6;
+}
+
+.warn {
+    color: #df7e00;
+}

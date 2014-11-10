@@ -1,0 +1,80 @@
+@charset "utf-8";
+
+html, body, p, h1, h2, h3, h4, h5, h6, header, footer, section, aside, nav, article, hr, ul, ol, dl {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    border: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+
+h2 {
+    margin: 20px 0 10px 0;
+}
+
+hr {
+    border: none;
+    background: #CCC;
+    height: 1px;
+}
+
+strong {
+    font-weight: bold;
+}
+
+hr {
+    border-top: 1px solid #161718;
+    border-bottom: 1px solid #464d51;
+    margin: 2px 0;
+}
+
+hr.space {
+    margin: 10px 0;
+}
+
+hr.var-height {
+    visibility: hidden;
+    clear: both;
+}
+
+a {
+    color: #e57f00;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a.neutral {
+    color: inherit;
+    border: none;
+}
+
+.relative {
+    position: relative;
+}
+
+.pull-left {
+    float: left;
+}
+
+.pull-right {
+    float: right;
+}
+
+.thin {
+    font-weight: 300;
+}
+
+body {
+    background: #16181a;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 16px;
+    color: #d1cdc8;
+}

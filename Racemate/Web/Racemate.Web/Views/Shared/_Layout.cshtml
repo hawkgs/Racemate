@@ -1,44 +1,90 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html>
 <head>
+    <meta name="description" content="RACEMATE - Closed community portal" />
+    <meta name="keywords" content="race,racemate" />
+    <meta name="author" content="Georgi Serev" />
+    <meta name="viewport" content="width=device-width" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-
+    <title>Racemate</title>
+    @Styles.Render("~/Content/private")
+    @RenderSection("styles", required: false)
+    <link href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700,300" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
+    <header id="main-header">
+        <div id="header-content">
+            <a href="@Url.Action("Index", "Home")" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
+            <div id="authenticated" class="pull-right relative">
+                <nav id="menu">
+                    <div class="nav-item create-race" title="Create Race"><span>New Race</span></div>
+                    <div class="nav-item races" title="Races"></div>
+                    <div class="nav-item members" title="Members"></div>
+                    <div class="nav-item reports" title="Reports"></div>
+                    <div class="nav-item notifications" title="Notifications">
+                        <div class="indicator">4</div>
+                        <div class="header-menu-holder notific">
+                            <div id="notifications" class="drop-down-window">
+                                <ul>
+                                    <li class="unread">You were demoted with 1000pts</li>
+                                    <li class="unread">You were demoted were demoted with 1000pts</li>
+                                    <li>You were demoted were demoted with 1000pts</li>
+                                    <li>You were demoted were with 1000pts</li>
+                                </ul>
+                                <div><a href="#" class="see-all">See all</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="pull-left profile-info">
+                    <div>
+                        <p class="thin">@User.Identity.GetUserName()</p>
+                        <p class="header-pts">3211</p>
+                    </div>
+                    <img src="~/Images/misc/avatar.png" width="38" height="38" alt="avatar" />
+                </div>
+                <div class="header-menu-holder">
+                    <div id="profile-menu" class="drop-down-window">
+                        <ul>
+                            <li><a href="#">My Profile</a></li>
+                            <li><a href="#">My Races</a></li>
+                            <li><a href="#">Garage</a></li>
+                            <li><a href="#">Invitations</a></li>
+                            <li>
+                                @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
+    </header>
+    <section id="main">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    </section>
+    <footer id="main-footer">
+        <div class="pull-left logo">
+            <img src="~/Images/footer_logo.png" width="32" height="32" alt="logo" />
+        </div>
+        <div class="pull-left">
+            <p>Racemate &copy; @DateTime.Now.Year</p>
+            <p class="thin">Organized street racing network</p>
+        </div>
+        <div class="pull-right footer-menu">
+            <a href="#">Create New Race</a>
+            <a href="#">List Races</a>
+            <a href="#">Members</a>
+            <a href="#">FAQ</a>
+            <a href="#">POLICY</a>
+        </div>
+    </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/main")
     @RenderSection("scripts", required: false)
 </body>
 </html>

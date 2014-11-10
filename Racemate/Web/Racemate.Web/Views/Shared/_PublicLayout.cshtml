@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="description" content="RACEMATE - Closed community portal" />
+    <meta name="keywords" content="race,racemate" />
+    <meta name="author" content="Georgi Serev" />
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <title>Racemate &bull; @ViewBag.Title</title>
+    @Styles.Render("~/Content/public")
+    <link href="http://fonts.googleapis.com/css?family=Roboto+Condensed:400,400italic,700,300" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="background"></div>
+    <header id="main-header">
+        <div id="header-content">
+            <a href="@Url.Action("Login", "Account")" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
+            <div class="pull-right relative">
+                @Html.ActionLink("Register", "Register", "Account", new {}, new { @class = "button green" })
+            </div>
+        </div>
+    </header>
+    <section id="main-content-holder">
+        <div id="main">
+            @RenderBody()
+        </div>
+    </section>
+    <footer id="main-footer">
+        <div class="pull-left logo">
+            <img src="~/Images/footer_logo.png" width="32" height="32" alt="logo" />
+        </div>
+        <div class="pull-left">
+            <p>Racemate &copy; @DateTime.Now.Year</p>
+            <p class="thin">Closed community network</p>
+        </div>
+    </footer>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    @Scripts.Render("~/bundles/main")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

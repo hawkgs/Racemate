@@ -30,6 +30,10 @@
 
         public int AvailableRacePositions { get; set; }
 
+        public string Address { get; set; }
+
+        public float Distance { get; set; }
+
         public bool IsFinished { get; set; }
 
         // Route information

@@ -1,0 +1,46 @@
+.container {
+    background: #2a2e30;
+    box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.7);
+    padding: 15px 15px;
+}
+
+.container.no-padding {
+    padding: 0;
+}
+
+div.holder {
+    overflow: hidden;
+    padding: 10px;
+}
+
+div.inner-holder {
+    overflow: hidden;
+}
+
+div.holder .container {
+    box-sizing: border-box;
+}
+
+section.content {
+    float: left;
+    width: 73%;
+}
+
+section.side {
+    float: right;
+    width: 27%;
+}
+
+section.side.pad-right {
+    width: 25%;
+}
+
+.half {
+    width: 50%;
+    float: left;
+}
+
+.half.pad-right {
+    width: 47.5%;
+    margin-left: 2.5%;
+}
