@@ -10,6 +10,7 @@
     {
         public Race()
         {
+            this.Id = Guid.NewGuid().ToString();
             this.Routepoints = new HashSet<RaceRoutePoint>();
             this.Participants = new HashSet<RaceParticipant>();
             this.Spectators = new HashSet<RaceSpectator>();

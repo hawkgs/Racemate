@@ -4,8 +4,10 @@
     using Racemate.Data.Models;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using Racemate.Web.Infrastructure.Mapping;
+    using AutoMapper;
 
-    public class RaceDataModel
+    public class RaceDataModel : IMapFrom<Race>, IHaveCustomMappings
     {
         private const string REQ_ERR_MSG = "{0} field is required!";
         private const string RNG_ERR_MSG = "The {0} must be between {1} and {2}!";
@@ -17,7 +19,7 @@
         public int AvailableRacePositions { get; set; }
 
         [Required(ErrorMessage = REQ_ERR_MSG)]
-        [Range(2, 25, ErrorMessage = RNG_ERR_MSG)]
+        [Range(1, 24, ErrorMessage = RNG_ERR_MSG)]
         public int Duration { get; set; }
 
         [Required(ErrorMessage = REQ_ERR_MSG)]
@@ -52,5 +54,13 @@
 
         [Required(ErrorMessage = REQ_ERR_MSG)]
         public int TypeId { get; set; }
+
+        // Pending
+        public RaceType Type { get; set; }
+
+        public void CreateMappings(IConfiguration configuration)
+        {
+            configuration.CreateMap<Race, RaceDataModel>().ReverseMap();
+        }
     }
 }

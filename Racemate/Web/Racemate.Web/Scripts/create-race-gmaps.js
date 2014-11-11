@@ -102,7 +102,7 @@
             url: "Create",
             data: dataObject,
             success: function (data) {
-                console.log("SUCCESS");
+                window.location = "User/Home";
             },
             error: function (response) {
                 var $errorContainer = $("#error-container");

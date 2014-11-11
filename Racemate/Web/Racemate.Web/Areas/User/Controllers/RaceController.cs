@@ -7,6 +7,9 @@ using Racemate.Web.Controllers.Common;
 using Racemate.Data;
 using Racemate.Web.Areas.User.ViewModels.Race;
 using System.Net;
+using AutoMapper;
+using Racemate.Data.Models;
+using System.Data.Entity.Validation;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -61,8 +64,13 @@ namespace Racemate.Web.Areas.User.Controllers
             }
 
             // Everything should be OK after this line
+            model.Type = raceType;
 
+            var car = Mapper.Map<RaceDataModel, Race>(model);
+            car.Organizer = this.CurrentUser;
 
+            this.data.Races.Add(car);
+            this.data.SaveChanges();
 
             return Json(new { });
         }
