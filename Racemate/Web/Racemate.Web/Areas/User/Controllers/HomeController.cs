@@ -18,7 +18,7 @@ namespace Racemate.Web.Areas.User.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            return this.View();
         }
     }
 }

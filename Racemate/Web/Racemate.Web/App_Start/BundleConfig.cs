@@ -15,6 +15,11 @@ namespace Racemate.Web
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/libs/jquery.validate*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/createRace").Include(
+                "~/Scripts/jquery.datetimepicker.js",
+                "~/Scripts/create-race-gmaps.js"
+            ));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
 

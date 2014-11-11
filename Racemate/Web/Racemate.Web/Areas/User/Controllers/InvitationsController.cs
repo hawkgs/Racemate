@@ -43,7 +43,7 @@ namespace Racemate.Web.Areas.User.Controllers
             int pageCount = invitationCodes
                 .Count() / PAGE_SIZE;
 
-            return View(new InvitationsViewModel() {
+            return this.View(new InvitationsViewModel() {
                 Codes = mappedCodes,
                 PageCount = pageCount,
                 CurrentPage = pageParam + 1
@@ -67,7 +67,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 this.ModelState.AddModelError("", "You cannot have more than 3 unused invitation codes!");
                 this.TempData["ViewData"] = this.ViewData;
 
-                return RedirectToAction("Index");
+                return this.RedirectToAction("Index");
             }
 
             string code;
@@ -87,7 +87,7 @@ namespace Racemate.Web.Areas.User.Controllers
             this.data.InvitationCodes.Add(invitationCode);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
     }
 }

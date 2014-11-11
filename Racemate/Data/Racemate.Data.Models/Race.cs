@@ -50,7 +50,7 @@
 
         public string Name { get; set; }
 
-        public int MoneyBet { get; set; }
+        public int? MoneyBet { get; set; }
 
         public string Password { get; set; }
 

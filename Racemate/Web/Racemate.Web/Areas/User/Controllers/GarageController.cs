@@ -29,7 +29,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 .Where(c => c.OwnerId == this.CurrentUser.Id)
                 .Project().To<CarViewModel>();
 
-            return View(cars);
+            return this.View(cars);
         }
 
         public ActionResult AddCar()
@@ -41,7 +41,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 MinimalCarYear = MIN_CAR_YEAR
             };
 
-            return View(model);
+            return this.View(model);
         }
 
         [HttpPost]
@@ -59,34 +59,34 @@ namespace Racemate.Web.Areas.User.Controllers
                     .FirstOrDefault(c => c.Id == carModelId);
             }
 
+            // TODO: Fix that shit
             if (carModel == null)
             {
                 this.ModelState.AddModelError("", "The car make and/or model are invalid!");
 
                 this.AttachContentToModel(model);
-                return View(model);
+                return this.View(model);
             }
             else if (raceTypes.Count == 0)
             {
                 this.ModelState.AddModelError("", "The selected race type(s) are invalid!");
 
                 this.AttachContentToModel(model);
-                return View(model);
+                return this.View(model);
             }
             else if (!int.TryParse(this.Request["YearOfProduction"], out year))
             {
                 this.ModelState.AddModelError("", "The provided year is invalid!");
 
                 this.AttachContentToModel(model);
-                return View(model);
+                return this.View(model);
             }
             else if (!this.ModelState.IsValid)
             {
                 this.AttachContentToModel(model);
-                return View(model);
+                return this.View(model);
             }
 
-            // Custom mapping
             var car = Mapper.Map<AddCarViewModel, Car>(model);
 
             car.Year = year.ToString();            
@@ -97,7 +97,7 @@ namespace Racemate.Web.Areas.User.Controllers
             this.data.Cars.Add(car);
             this.data.SaveChanges();
 
-            return RedirectToAction("Index");
+            return this.RedirectToAction("Index");
         }
 
         public JsonResult MakeModels(int makeId)

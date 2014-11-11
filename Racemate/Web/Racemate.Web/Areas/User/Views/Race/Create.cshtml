@@ -1,0 +1,60 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Race.RaceDataModel
+@{
+    ViewBag.Title = "Create A Race";
+}
+
+<div id="error-container">
+</div>
+
+<h2>@ViewBag.Title</h2>
+<div class="holder">
+    <section class="content">
+        <div id="map-canvas" class="large container"></div>
+    </section>
+    <section class="side pad-right">
+        <div class="container" id="create-race-form">
+            <button id="add-init-markers" class="green">Add Markers</button>
+            <button id="add-node-marker" class="green">Add Node</button>
+            <hr class="space" />
+            <table>
+                <tr>
+                    <td><div class="rc-detail location" title="Location"></div></td>
+                    <td id="location-field">N/A</td>
+                </tr>
+                <tr>
+                    <td><div class="rc-detail distance" title="Distance"></div></td>
+                    <td id="distance-field">N/A</td>
+                </tr>
+            </table>
+            <hr class="space">
+            <label for="race-type-select">Select race type</label>
+            @Html.DropDownList("RaceTypes", (IEnumerable<SelectListItem>)ViewBag.RaceTypesSelect, new { id = "race-type-select" })
+            <hr class="space" />
+            <input type="number" id="duration" placeholder="Duration (in hours)" />
+            <input type="text" id="date-time-race" placeholder="Date and time" />
+            <input type="number" id="racers" placeholder="Number of racers" />
+            <hr />
+            <label for="race-name">Set a short name</label>
+            <input type="text" id="race-name" placeholder="Race name" />
+            <label for="race-description">The description is optional</label>
+            <textarea id="race-description"></textarea>
+            <hr class="space" />
+            <label for="bet">The purpose of the "Bet" field is only informative so that the racer is aware of it. It's optional.</label>
+            <input type="number" id="bet" placeholder="Bet (in leva)" />
+            <hr class="space" />
+            <label for="race-password">Use if you want to restrict the access for free joining. Password-protected races cannot have spectators.</label>
+            <input type="password" id="race-password" placeholder="Password" />
+            <hr class="space" />
+            <button id="create-race-btn" class="green">Create Race</button>
+        </div>
+    </section>
+</div>
+
+@section styles {
+    @Styles.Render("~/Content/jquery.datetimepicker.css");
+}
+
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    @Scripts.Render("~/bundles/createRace")
+}
