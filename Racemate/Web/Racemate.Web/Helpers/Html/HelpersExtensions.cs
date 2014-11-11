@@ -14,5 +14,21 @@
 
             return new MvcHtmlString(htmlString);
         }
+
+        public static MvcHtmlString CarExtra(this HtmlHelper helper, bool isOn, string name)
+        {
+            string @class = isOn ? "on" : String.Empty;
+            string htmlString = String.Format("<div class=\"extra {0}\"><p>{1}</p></div>", @class, name);
+
+            return new MvcHtmlString(htmlString);
+        }
+
+        public static MvcHtmlString CarHpPerTon(this HtmlHelper helper, int hp, int weight)
+        {
+            float inTons = (float)weight / (float)1000;
+            float hpPerTon = hp / inTons;
+
+            return new MvcHtmlString(((int)hpPerTon).ToString());
+        }
     }
 }

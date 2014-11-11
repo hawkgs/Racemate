@@ -1,0 +1,26 @@
+﻿@using Racemate.Web.Helpers.Html
+@model Racemate.Web.Areas.User.ViewModels.Garage.CarViewModel
+
+<div class="title">@String.Format("{0} {1}", Model.Model.CarMake.Name, Model.Model.Name)</div>
+<div class="data">
+    <div class="hp-ton" title="HP per ton">@Html.CarHpPerTon(Model.Hp, Model.Weight)</div>
+    <ul class="general-data">
+        <li>Horsepower <span>@Model.Hp hp</span></li>
+        <li>Weight <span>@Model.Weight kg</span></li>
+        <li>Torque <span>@Model.Torque N&CenterDot;m</span></li>
+        <li>Aspiration <span>@Model.EngineAspiration</span></li>
+        <li>Displacement <span>@Model.EngineDisplacement cc</span></li>
+        <li>Year of Prod <span>@Model.Year</span></li>
+    </ul>
+    <div class="types">
+        @foreach (var type in Model.RaceTypes)
+        {
+            @Html.CarRaceType(type.Name)
+        }
+    </div>
+</div>
+<div class="extras">
+    @Html.CarExtra(Model.IsLaunchControlMounted, "Launch Ctrl")
+    @Html.CarExtra(Model.IsAntilagMounted, "Antilag")
+    @Html.CarExtra(Model.IsN2oMounted, "N2O")
+</div>
