@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper.QueryableExtensions;
 using System.Web.Caching;
+using AutoMapper;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -24,7 +25,11 @@ namespace Racemate.Web.Areas.User.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            var cars = this.data.Cars.All()
+                .Where(c => c.OwnerId == this.CurrentUser.Id)
+                .Project().To<CarViewModel>();
+
+            return View(cars);
         }
 
         public ActionResult AddCar()
@@ -43,16 +48,54 @@ namespace Racemate.Web.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddCar(AddCarViewModel model)
         {
-            var carModel = this.Request["CarModelId"];
+            int carModelId;
+            int year;
+            CarModel carModel = null;
+            var raceTypes = this.ParseRaceTypes(model.SelectedRaceTypes);
 
-            if (!this.ModelState.IsValid)
+            if (int.TryParse(this.Request["CarModelId"], out carModelId))
             {
-                model.RaceTypesList = this.BuildRaceTypeMultiSelect();
-                model.CarMakes = this.GetCarMakes();
-                this.ModelState.AddModelError("", "Yasdasd");
+                carModel = this.data.CarModels.All()
+                    .FirstOrDefault(c => c.Id == carModelId);
+            }
 
+            if (carModel == null)
+            {
+                this.ModelState.AddModelError("", "The car make and/or model are invalid!");
+
+                this.AttachContentToModel(model);
                 return View(model);
             }
+            else if (raceTypes.Count == 0)
+            {
+                this.ModelState.AddModelError("", "The selected race type(s) are invalid!");
+
+                this.AttachContentToModel(model);
+                return View(model);
+            }
+            else if (!int.TryParse(this.Request["YearOfProduction"], out year))
+            {
+                this.ModelState.AddModelError("", "The provided year is invalid!");
+
+                this.AttachContentToModel(model);
+                return View(model);
+            }
+            else if (!this.ModelState.IsValid)
+            {
+                this.AttachContentToModel(model);
+                return View(model);
+            }
+
+            // Custom mapping
+            var car = Mapper.Map<AddCarViewModel, Car>(model);
+
+            car.Year = year.ToString();            
+            car.Owner = this.CurrentUser;
+            car.Model = carModel;
+            car.RaceTypes = raceTypes;
+
+            this.data.Cars.Add(car);
+            this.data.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -68,25 +111,78 @@ namespace Racemate.Web.Areas.User.Controllers
 
         #region Helpers
 
+        private void AttachContentToModel(AddCarViewModel model)
+        {
+            model.RaceTypesList = this.BuildRaceTypeMultiSelect();
+            model.CarMakes = this.GetCarMakes();
+        }
+
+        private ICollection<RaceType> ParseRaceTypes(IEnumerable<string> types)
+        {
+            var raceTypes = this.GetRaceTypes();
+            var carRaceTypes = new HashSet<RaceType>();
+
+            foreach (string enumId in types)
+            {
+                int id;
+
+                if (int.TryParse(enumId, out id))
+                {
+                    foreach (RaceType type in raceTypes)
+                    {
+                        if (type.Id == id)
+                        {
+                            carRaceTypes.Add(type);
+                        }
+                    }
+                }
+            }
+
+            return carRaceTypes;
+        }
+
         private IEnumerable<SelectListItem> BuildRaceTypeMultiSelect()
         {
-            var raceTypes = Enum.GetValues(typeof(RaceType)).Cast<RaceType>().ToList();
+            var raceTypes = this.data.RaceTypes.All();
             var raceTypesList = new List<SelectListItem>();
 
-            foreach (var enumItem in raceTypes)
+            foreach (var raceType in raceTypes)
             {
                 raceTypesList.Add(new SelectListItem()
                 {
-                    Text = enumItem.ToString(),
-                    Value = ((int)enumItem).ToString()
+                    Text = raceType.Name,
+                    Value = raceType.Id.ToString()
                 });
             }
 
             return raceTypesList;
         }
 
+        private IQueryable<RaceType> GetRaceTypes()
+        {
+            const int CACHE_HR = 24;
+
+            if (this.HttpContext.Cache["raceTypes"] == null)
+            {
+                var raceTypes = this.data.RaceTypes.All();
+
+                this.HttpContext.Cache.Insert(
+                "raceTypes",
+                raceTypes,
+                null,
+                DateTime.Now.AddHours(CACHE_HR),
+                TimeSpan.Zero,
+                CacheItemPriority.Default,
+                this.OnCacheItemRemovedCallback);
+            }
+
+            return (IQueryable<RaceType>)this.HttpContext.Cache["raceTypes"];
+        }
+
         private IQueryable<CarMake> GetCarMakes()
         {
+            const int CACHE_MIN = 30;
+
             if (this.HttpContext.Cache["carMakes"] == null)
             {
                 var carMakes = this.data.CarMakes.All();
@@ -95,7 +191,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 "carMakes",
                 carMakes,
                 null,
-                DateTime.Now.AddMinutes(15),
+                DateTime.Now.AddMinutes(CACHE_MIN),
                 TimeSpan.Zero,
                 CacheItemPriority.Default,
                 this.OnCacheItemRemovedCallback);

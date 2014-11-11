@@ -14,8 +14,11 @@
             <fieldset>
                 <legend>@ViewBag.Title</legend>
 
-                @Html.ValidationSummary(true, "", new { @class = "msg-list error" })
-                @Html.ValidationMessageFor(m => m.Weight, "", new { @class = "msg error" })
+                @Html.ValidationSummary(true, "", new { @class = "msg-span error" })
+                @Html.ValidationMessageFor(m => m.Hp, "", new { @class = "msg-span error" })
+                @Html.ValidationMessageFor(m => m.Weight, "", new { @class = "msg-span error" })
+                @Html.ValidationMessageFor(m => m.Torque, "", new { @class = "msg-span error" })
+                @Html.ValidationMessageFor(m => m.EngineAspiration, "", new { @class = "msg-span error" })
 
                 <div class="row">
                     <p class="title">Car model and make</p>
@@ -62,10 +65,10 @@
                     <div class="col">
                         <label for="year">Year of Production</label>
                         <select id="year" name="YearOfProduction">
-                            @for (int year = DateTime.Now.Year; year >= Model.MinimalCarYear; year--)
-                            {
-                                <option value="@year">@year</option>
-                            }
+                        @for (int year = DateTime.Now.Year; year >= Model.MinimalCarYear; year--)
+                        {
+                            <option value="@year">@year</option>
+                        }
                         </select>
                     </div>
                 </div>
@@ -97,28 +100,5 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
-    <script>
-        $("#car-makes-select").change(function () {
-            var $carModelSelect = $("#car-model-select");
-
-            $.ajax({
-                url: "/User/Garage/MakeModels",
-                method: "GET",
-                data: { makeId: $(this).val() },
-                success: function (models) {
-                    $carModelSelect.html("");
-
-                    models.forEach(function (item) {
-                        var option = $("<option>").val(item.Id).text(item.Name);
-
-                        $carModelSelect.append(option);
-                    });
-                },
-                error: function () {
-                    console.log("An error occurred while processing data.");
-                }
-            });
-        });
-    </script>
+    @Scripts.Render("~/Scripts/add-car-form.js")
 }

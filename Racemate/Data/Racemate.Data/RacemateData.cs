@@ -47,6 +47,11 @@
             get { return this.GetRepository<Race>(); }
         }
 
+        public IRepository<RaceType> RaceTypes
+        {
+            get { return this.GetRepository<RaceType>(); }
+        }
+
         public IRepository<RaceRoutePoint> RaceRoutePoints
         {
             get { return this.GetRepository<RaceRoutePoint>(); }

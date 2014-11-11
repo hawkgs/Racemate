@@ -17,6 +17,8 @@
 
         IRepository<Race> Races { get; }
 
+        IRepository<RaceType> RaceTypes { get; }
+
         IRepository<RaceRoutePoint> RaceRoutePoints { get; }
 
         IRepository<RaceParticipant> RaceParticipants { get; }

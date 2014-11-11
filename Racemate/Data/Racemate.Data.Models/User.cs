@@ -1,6 +1,7 @@
 ﻿namespace Racemate.Data.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -13,6 +14,7 @@
         public User()
         {
             this.CreatedOn = DateTime.Now;
+            this.Cars = new HashSet<Car>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
@@ -38,6 +40,8 @@
         public int ThirdPlaces { get; set; }
 
         public int TotalRaces { get; set; }
+
+        public virtual ICollection<Car> Cars { get; set; }
 
         // Interfaces
 

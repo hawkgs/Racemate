@@ -1,4 +1,6 @@
-﻿@{
+﻿@using Racemate.Web.Helpers.Html
+@model IEnumerable<Racemate.Web.Areas.User.ViewModels.Garage.CarViewModel>
+@{
     ViewBag.Title = "Garage";
 }
 
@@ -6,4 +8,37 @@
     @ViewBag.Title
     @Html.ActionLink("Add Car", "AddCar", "Garage", new { }, new { @class = "button green pull-right" })
 </h2>
-
+<div class="holder">
+    @foreach (var car in Model)
+    {
+        <div class="car-info container">
+            <div class="title">@String.Format("{0} {1}", car.Model.CarMake.Name, car.Model.Name)</div>
+            <div class="data">
+                <div class="hp-ton" title="HP per ton">984</div>
+                <ul class="general-data">
+                    <li>Horsepower <span>@car.Hp hp</span></li>
+                    <li>Weight <span>@car.Weight kg</span></li>
+                    <li>Torque <span>@car.Torque N&CenterDot;m</span></li>
+                    <li>Aspiration <span>@car.EngineAspiration</span></li>
+                    <li>Displacement <span>@car.EngineDisplacement cc</span></li>
+                    <li>Year of Prod <span>2014</span></li>
+                </ul>
+                <div class="types">
+                    @foreach (var type in car.RaceTypes)
+                    {
+                        @Html.CarRaceType(type.Name)
+                    }
+                </div>
+            </div>
+            <div class="extras">
+                <div class="extra on"><p>Launch Ctrl</p></div>
+                <div class="extra on"><p>Antilag</p></div>
+                <div class="extra"><p>N2O</p></div>
+            </div>
+            <div class="edit-panel">
+                <a href="#" class="button green">EDIT</a>
+                <a href="#" class="button orange">DELETE</a>
+            </div>
+        </div>
+    }
+</div>

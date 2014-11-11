@@ -31,6 +31,8 @@
 
         public IDbSet<Race> Races { get; set; }
 
+        public IDbSet<RaceType> RaceTypes { get; set; }
+
         public IDbSet<RaceRoutePoint> RaceRoutePoints { get; set; }
 
         public IDbSet<RaceParticipant> RaceParticipants { get; set; }

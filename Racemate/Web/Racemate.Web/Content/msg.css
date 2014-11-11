@@ -6,6 +6,10 @@
     margin-bottom: 10px;
 }
 
+.msg-span {
+    display: block;
+}
+
 .msg-list > ul {
     list-style-type: none;
 }

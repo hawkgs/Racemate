@@ -15,6 +15,8 @@ namespace Racemate.Web.Areas.User.Controllers
     [Authorize]
     public class InvitationsController : BaseController
     {
+        private const int MAX_UNUSED_CODES = 3;
+
         public InvitationsController(IRacemateData data)
             : base(data)
         {
@@ -28,11 +30,6 @@ namespace Racemate.Web.Areas.User.Controllers
             {
                 this.ViewData = (ViewDataDictionary)this.TempData["ViewData"];
             }
-
-            // Custom mapping
-            AutoMapper.Mapper.CreateMap<InvitationCode, InvitationCodeViewModel>()
-                .ForMember(dest => dest.User,
-                           opts => opts.MapFrom(src => src.User.UserName));
 
             var invitationCodes = this.data.InvitationCodes.All()
                 .Where(i => i.CreatorId == this.CurrentUser.Id);
@@ -57,15 +54,15 @@ namespace Racemate.Web.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GenerateCode()
         {
-            bool areThereMoreThan3Codes = this.data.InvitationCodes.All()
+            bool areThereCodesWithinLimit = this.data.InvitationCodes.All()
                 .Where
                 (
                     i => i.CreatorId == this.CurrentUser.Id &&
                          i.UserId == null
                 )
-                .Count() >= 3;
+                .Count() >= MAX_UNUSED_CODES;
 
-            if (areThereMoreThan3Codes)
+            if (areThereCodesWithinLimit)
             {
                 this.ModelState.AddModelError("", "You cannot have more than 3 unused invitation codes!");
                 this.TempData["ViewData"] = this.ViewData;

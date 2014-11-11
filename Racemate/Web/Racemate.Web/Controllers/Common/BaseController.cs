@@ -25,6 +25,8 @@
             this.data = data;
         }
 
+        #region Helpers
+
         protected int GetPage(int? page)
         {
             int pageParam = 0;
@@ -36,5 +38,7 @@
 
             return pageParam;
         }
+
+        #endregion
     }
 }
