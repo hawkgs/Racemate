@@ -17,7 +17,14 @@ namespace Racemate.Web
 
             bundles.Add(new ScriptBundle("~/bundles/createRace").Include(
                 "~/Scripts/jquery.datetimepicker.js",
-                "~/Scripts/create-race-gmaps.js"
+                "~/Scripts/maps/map-core.js",
+                "~/Scripts/maps/route-builder.js",
+                "~/Scripts/maps/create-race.js"
+            ));
+
+            bundles.Add(new ScriptBundle("~/bundles/globalMap").Include(
+                "~/Scripts/maps/map-core.js",
+                "~/Scripts/maps/global-map.js"
             ));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're

@@ -21,6 +21,7 @@
             return new RacemateDbContext();
         }
 
+        // Routepoints latitude and longitude decimal precision setting
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RaceRoutePoint>()

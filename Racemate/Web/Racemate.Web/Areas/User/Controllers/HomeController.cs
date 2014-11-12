@@ -8,9 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using model = Racemate.Data.Models;
 using System.Web.Caching;
 using Racemate.Data.Models;
+using System.Net;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -32,9 +32,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 .Take(LATEST_RACES_NUM)
                 .Project().To<RaceThumbViewModel>();
 
-            var topMembers = this.GetTopMembers()
-                .Take(TOP_MEMBERS_NUM)
-                .Project().To<UserThumbViewModel>();
+            var topMembers = this.GetTopMembers();
 
             var model = new HomeViewModel()
             {
@@ -47,15 +45,14 @@ namespace Racemate.Web.Areas.User.Controllers
 
         public JsonResult MapRaces()
         {
-            var mapRaces = this.GetAllMapRaces()
-                .Project().To<RaceMapDataModel>();
+            var mapRaces = this.GetAllMapRaces();
 
             return this.Json(mapRaces, JsonRequestBehavior.AllowGet);
         }
 
         #region Helpers
 
-        private IQueryable<Race> GetAllMapRaces()
+        private IEnumerable<RaceMapDataModel> GetAllMapRaces()
         {
             const int CACHE_MIN = 1;
             const string KEY = "allRaces";
@@ -66,8 +63,10 @@ namespace Racemate.Web.Areas.User.Controllers
                     .Where(r => 
                         (!r.IsFinished && !r.IsCanceled) &&
                         (r.DateTimeOfRace > DateTime.Now) ||
-                        (r.DateTimeOfRace < DateTime.Now)
-                    );
+                        (r.DateTimeOfRace < DateTime.Now) // TODO during race
+                    )
+                    .Project().To<RaceMapDataModel>()
+                    .ToList();
 
                 this.HttpContext.Cache.Insert(
                 KEY,
@@ -79,10 +78,10 @@ namespace Racemate.Web.Areas.User.Controllers
                 this.OnCacheItemRemovedCallback);
             }
 
-            return (IQueryable<Race>)this.HttpContext.Cache[KEY];
+            return (IEnumerable<RaceMapDataModel>)this.HttpContext.Cache[KEY];
         }
 
-        private IQueryable<model.User> GetTopMembers()
+        private IEnumerable<UserThumbViewModel> GetTopMembers()
         {
             const int CACHE_MIN = 60;
             const string KEY = "topMembers";
@@ -93,7 +92,9 @@ namespace Racemate.Web.Areas.User.Controllers
                     .OrderByDescending(u => u.FirstPlaces)
                     .ThenByDescending(u => u.SecondPlaces)
                     .ThenByDescending(u => u.ThirdPlaces)
-                    .Take(TOP_MEMBERS_NUM);
+                    .Take(TOP_MEMBERS_NUM)
+                    .Project().To<UserThumbViewModel>()
+                    .ToList(); // In order to cache the result not the IQueryable
 
                 this.HttpContext.Cache.Insert(
                 KEY,
@@ -105,7 +106,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 this.OnCacheItemRemovedCallback);
             }
 
-            return (IQueryable<model.User>)this.HttpContext.Cache[KEY];
+            return (IEnumerable<UserThumbViewModel>)this.HttpContext.Cache[KEY];
         }
 
         private void OnCacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)

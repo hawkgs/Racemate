@@ -62,16 +62,6 @@
 </div>
 
 @section scripts {
-    <script>
-        //$.ajax({
-        //    method: "GET",
-        //    url: "/User/Home/MapRaces",
-        //    success: function(data) {
-        //        console.log(data);
-        //    },
-        //    error: function() {
-        //        console.log("Error");
-        //    }
-        //});
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    @Scripts.Render("~/bundles/globalMap");
 }
