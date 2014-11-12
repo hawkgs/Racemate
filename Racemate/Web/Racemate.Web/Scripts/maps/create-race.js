@@ -114,7 +114,7 @@
     };
 
     RaceCreator.addMarker = function() {
-        var point = $$core.createMarker("Point", MARKERS_PATH + "route_point.png");
+        var point = $$core.createMarker("Point", $$core.MARKERS_PATH + "route_point.png");
 
         RaceCreator.bindDragEventToMarker(point);
         $$routeBuilder.markers.splice($$routeBuilder.markers.length - 1, 0, point);

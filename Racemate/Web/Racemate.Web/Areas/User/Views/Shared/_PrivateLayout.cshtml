@@ -13,7 +13,7 @@
                    title="Create Race">
                     <span>New Race</span>
                 </a>
-                <div class="nav-item races" title="Races"></div>
+                <a href="@Url.Action("List", "Race", new { Area = "User" })" title="Races" class="nav-item races"></a>
                 <div class="nav-item members" title="Members"></div>
                 @if(User.IsInRole("Admin"))
                 {

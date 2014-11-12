@@ -9,8 +9,10 @@ namespace Racemate.Web
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
-                        "~/Scripts/libs/jquery-{version}.js",
-                        "~/Scripts/menus.js"));
+                "~/Scripts/libs/jquery-{version}.js",
+                "~/Scripts/header-menu-light-switcher.js",
+                "~/Scripts/menus.js"
+            ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/libs/jquery.validate*"));

@@ -7,7 +7,7 @@
 
     public class BaseController : Controller
     {
-        protected const int PAGE_SIZE = 10;
+        protected const int PAGE_SIZE = 3;
 
         protected readonly IRacemateData data;
 
@@ -24,21 +24,5 @@
         {
             this.data = data;
         }
-
-        #region Helpers
-
-        protected int GetPage(int? page)
-        {
-            int pageParam = 0;
-
-            if (page.HasValue && page > 0)
-            {
-                pageParam = page.Value - 1;
-            }
-
-            return pageParam;
-        }
-
-        #endregion
     }
 }

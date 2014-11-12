@@ -9,6 +9,7 @@ using Generators;
 using Racemate.Data.Models;
 using Racemate.Web.Areas.User.ViewModels.Invitations;
 using AutoMapper.QueryableExtensions;
+using Racemate.Common;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -24,7 +25,7 @@ namespace Racemate.Web.Areas.User.Controllers
 
         public ActionResult Index(int? page)
         {
-            int pageParam = this.GetPage(page);
+            int pageParam = Paging.GetCurrentPage(page);
 
             if (this.TempData["ViewData"] != null)
             {
@@ -40,11 +41,10 @@ namespace Racemate.Web.Areas.User.Controllers
                 .Take(PAGE_SIZE)
                 .Project().To<InvitationCodeViewModel>();
 
-            int pageCount = invitationCodes
-                .Count() / PAGE_SIZE;
+            int pageCount = Paging.GetPageCount(invitationCodes.Count(), PAGE_SIZE);
 
             return this.View(new InvitationsViewModel() {
-                Codes = mappedCodes,
+                Collection = mappedCodes,
                 PageCount = pageCount,
                 CurrentPage = pageParam + 1
             });

@@ -1,0 +1,50 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Race.RaceListViewModel
+@{
+    ViewBag.Title = "All Races";
+}
+
+<h2>@ViewBag.Title</h2>
+<div class="holder">
+    <table class="grid">
+        <thead>
+            <tr>
+                <th>
+                    Name 
+                    @Html.ActionLink(
+                        HttpUtility.HtmlDecode("&#8645;"), "List", "Race",
+                        new { sortBy = "name", order = (Model.IsDescending ? "desc" : "asc") },
+                        new { @class = "sorter" })
+                </th>
+                <th>Issued On</th>
+                <th>In Use By</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in Model.Collection)
+            {
+                <tr>
+                    <td>@race.Name</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pager">
+        @for (int page = 1; page <= Model.PageCount; page++)
+        {
+            string selectedClass = String.Empty;
+
+            if (page == Model.CurrentPage)
+            {
+                selectedClass = "current-page";
+            }
+
+            @Html.ActionLink(page.ToString(), "List", "Race", new { page = page, sortBy = Model.SortBy, order = Model.Order }, new { @class = selectedClass })
+        }
+    </div>
+</div>
+
+@section styles {
+    @Styles.Render("~/Content/grids")
+}

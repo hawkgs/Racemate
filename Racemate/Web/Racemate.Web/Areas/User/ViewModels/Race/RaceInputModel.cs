@@ -7,7 +7,7 @@
     using Racemate.Web.Infrastructure.Mapping;
     using AutoMapper;
 
-    public class RaceDataModel : IMapFrom<Race>, IHaveCustomMappings
+    public class RaceInputModel : IMapFrom<Race>, IHaveCustomMappings
     {
         private const string REQ_ERR_MSG = "{0} field is required!";
         private const string RNG_ERR_MSG = "The {0} must be between {1} and {2}!";
@@ -60,7 +60,7 @@
 
         public void CreateMappings(IConfiguration configuration)
         {
-            configuration.CreateMap<Race, RaceDataModel>().ReverseMap();
+            configuration.CreateMap<Race, RaceInputModel>().ReverseMap();
         }
     }
 }
