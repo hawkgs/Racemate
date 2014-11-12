@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using Racemate.Data.Common.Repository;
     using Racemate.Data.Models;
+    using Racemate.Data.Common.Models;
 
     public class RacemateData : IRacemateData
     {
@@ -88,13 +89,13 @@
         }
 
         private IRepository<T> GetRepository<T>()
-            where T : class
+            where T : class, IDeletableEntity
         {
             var typeOfRepository = typeof(T);
 
             if (!this.repositories.ContainsKey(typeOfRepository))
             {
-                var newRepo = Activator.CreateInstance(typeof(GenericRepository<T>), context);
+                var newRepo = Activator.CreateInstance(typeof(DeletableEntityRepository<T>), context);
                 this.repositories.Add(typeOfRepository, newRepo);
             }
 
