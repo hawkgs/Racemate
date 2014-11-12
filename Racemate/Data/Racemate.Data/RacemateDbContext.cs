@@ -21,6 +21,16 @@
             return new RacemateDbContext();
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RaceRoutePoint>()
+                .Property(r => r.Latitude).HasPrecision(18, 15);
+            modelBuilder.Entity<RaceRoutePoint>()
+                .Property(r => r.Longitude).HasPrecision(18, 15);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
         public IDbSet<InvitationCode> InvitationCodes { get; set; }
 
         public IDbSet<CarMake> CarMakes { get; set; }

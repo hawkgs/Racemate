@@ -1,25 +1,22 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Home
 {
     using System;
-    using AutoMapper;
-    using Racemate.Data.Models;
+    using System.Collections.Generic;
     using Racemate.Web.Infrastructure.Mapping;
+    using Racemate.Data.Models;
+    using AutoMapper;
 
-    public class RaceThumbViewModel : RaceAbstractViewModel, IMapFrom<Race>, IHaveCustomMappings
+    public class RaceMapDataModel : RaceAbstractViewModel, IMapFrom<Race>, IHaveCustomMappings
     {
-        public string Address { get; set; }
-
-        public bool IsFinished { get; set; }
-
-        public bool IsCanceled { get; set; }
-
         public string Type { get; set; }
 
         public int FreeRacePositions { get; set; }
 
+        public virtual ICollection<RaceRoutePoint> Routepoints { get; set; }
+
         public void CreateMappings(IConfiguration configuration)
         {
-            configuration.CreateMap<Race, RaceThumbViewModel>()
+            configuration.CreateMap<Race, RaceMapDataModel>()
                 .ForMember(dest => dest.Type,
                             opts => opts.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.FreeRacePositions,

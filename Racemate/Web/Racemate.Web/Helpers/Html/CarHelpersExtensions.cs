@@ -1,11 +1,9 @@
 ﻿namespace Racemate.Web.Helpers.Html
 {
     using System;
-    using System.Collections.Generic;
-    using System.Web;
     using System.Web.Mvc;
 
-    public static class HelpersExtensions
+    public static class CarHelpersExtensions
     {
         public static MvcHtmlString CarRaceType(this HtmlHelper helper, string title)
         {

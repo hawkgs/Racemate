@@ -65,19 +65,13 @@ namespace Racemate.Web.Areas.User.Controllers
             // Everything should be OK after this line
             model.Type = raceType;
 
-            var car = Mapper.Map<RaceDataModel, Race>(model);
-            car.Organizer = this.CurrentUser;
+            var race = Mapper.Map<RaceDataModel, Race>(model);
+            race.Organizer = this.CurrentUser;
 
-            this.data.Races.Add(car);
+            this.data.Races.Add(race);
             this.data.SaveChanges();
 
             return Json(new { });
         }
-
-        #region Helper
-
-
-
-        #endregion
     }
 }
