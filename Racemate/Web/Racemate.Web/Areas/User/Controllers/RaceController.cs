@@ -21,7 +21,6 @@ namespace Racemate.Web.Areas.User.Controllers
         {
         }
 
-        
         public ActionResult Create()
         {
             ViewBag.RaceTypesSelect = this.data.RaceTypes.All()
