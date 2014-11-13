@@ -12,6 +12,8 @@ using Racemate.Data.Models;
 using System.Data.Entity.Validation;
 using AutoMapper.QueryableExtensions;
 using Racemate.Common;
+using Racemate.Web.Areas.User.ViewModels.Home;
+using Racemate.Common.Contracts;
 
 namespace Racemate.Web.Areas.User.Controllers
 {
@@ -25,42 +27,17 @@ namespace Racemate.Web.Areas.User.Controllers
 
         public ActionResult List(int? page, string sortBy, string order)
         {
-            int pageParam = Paging.GetCurrentPage(page);
             var races = this.data.Races.All();
-            bool isDescending = false;
 
-            // Ugly as fuck
-            switch (sortBy) {
-                case "name":
-                    if (order == "desc")
-                    {
-                        races = races.OrderByDescending(r => r.Name);
-                    }
-                    else
-                    {
-                        races = races.OrderBy(r => r.Name);
-                        isDescending = true;
-                    }
-                    break;
-                default:
-                    races = races.OrderByDescending(r => r.CreatedOn);
-                    break;
-            }
-            
-            var modelRaces = races.Skip(pageParam * PAGE_SIZE)
-                .Take(PAGE_SIZE)
-                .Project().To<RaceGridDetailsViewModel>();
+            return this.RaceList(races, page, sortBy, order);
+        }
 
-            int pageCount = Paging.GetPageCount(races.Count(), PAGE_SIZE);
+        public ActionResult MyRaces(int? page, string sortBy, string order)
+        {
+            var races = this.data.Races.All()
+                .Where(r => r.OrganizerId == this.CurrentUser.Id);
 
-            return this.View(new RaceListViewModel() { 
-                Collection = modelRaces,
-                PageCount = pageCount,
-                CurrentPage = pageParam + 1,
-                IsDescending = isDescending,
-                SortBy = sortBy,
-                Order = order
-            });
+            return this.RaceList(races, page, sortBy, order);
         }
 
         public ActionResult Create()
@@ -114,6 +91,50 @@ namespace Racemate.Web.Areas.User.Controllers
             this.data.SaveChanges();
 
             return this.Json(new { });
+        }
+
+        [NonAction]
+        private ActionResult RaceList(IQueryable<Race> races, int? page, string sortBy, string order)
+        {
+            int pageParam = Paging.GetCurrentPage(page);
+            bool isDescending = false;
+            ISorter<Race> sorter = new Sorter<Race>(races);
+
+            // Ugly as fuck
+            switch (sortBy)
+            {
+                case "name":
+                    isDescending = sorter.SortBy(order, isDescending, r => r.DateTimeOfRace);
+                    break;
+                case "date":
+                    isDescending = sorter.SortBy(order, isDescending, r => r.DateTimeOfRace);
+                    break;
+                case "type":
+                    isDescending = sorter.SortBy(order, isDescending, r => r.Type.Name);
+                    break;
+                case "positions":
+                    isDescending = sorter.SortBy(order, isDescending, r => r.AvailableRacePositions - r.Participants.Count);
+                    break;
+                default:
+                    sorter.Collection = sorter.Collection.OrderByDescending(r => r.CreatedOn);
+                    break;
+            }
+
+            var modelRaces = sorter.Collection.Skip(pageParam * PAGE_SIZE)
+                .Take(PAGE_SIZE)
+                .Project().To<RaceThumbViewModel>();
+
+            int pageCount = Paging.GetPageCount(races.Count(), PAGE_SIZE);
+
+            return this.View(new RaceListViewModel()
+            {
+                Collection = modelRaces,
+                PageCount = pageCount,
+                CurrentPage = pageParam + 1,
+                IsDescending = isDescending,
+                SortBy = sortBy,
+                Order = order
+            });
         }
     }
 }

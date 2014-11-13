@@ -5,6 +5,9 @@
     var pages = [{
         route: "/Administration/Reports",
         _class: "reports"
+    }, {
+        route: "/User/Race/List",
+        _class: "races"
     }];
 
     pages.forEach(function (page) {

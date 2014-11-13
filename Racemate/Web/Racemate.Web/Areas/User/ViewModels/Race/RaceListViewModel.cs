@@ -1,11 +1,12 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Race
 {
     using System.Collections.Generic;
-    using Racemate.Web.Models.Common;
+    using Racemate.Web.Areas.User.ViewModels.Home;
+    using Racemate.Common.Contracts;
 
-    public class RaceListViewModel : IPaging<RaceGridDetailsViewModel>, ISortable
+    public class RaceListViewModel : IPaging<RaceThumbViewModel>, ISortable
     {
-        public IEnumerable<RaceGridDetailsViewModel> Collection { get; set; }
+        public IEnumerable<RaceThumbViewModel> Collection { get; set; }
 
         public int PageCount { get; set; }
 

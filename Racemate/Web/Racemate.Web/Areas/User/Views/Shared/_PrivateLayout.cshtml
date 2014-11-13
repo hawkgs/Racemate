@@ -45,8 +45,8 @@
                 <div id="profile-menu" class="drop-down-window">
                     <ul>
                         <li><a href="#">My Profile</a></li>
-                        <li><a href="#">My Races</a></li>
-                        <li>@Html.ActionLink("Garage", "Index", "Garage", new { Area = "User" }, new {})</li>
+                        <li>@Html.ActionLink("My Races", "MyRaces", "Race", new { Area = "User" }, new { })</li>
+                        <li>@Html.ActionLink("Garage", "Index", "Garage", new { Area = "User" }, new { })</li>
                         <li>@Html.ActionLink("Invitations", "Index", "Invitations", new { Area = "User" }, new { })</li>
                         <li>
                             @using (Html.BeginForm("LogOff", "Account", new { Area = "" }, FormMethod.Post, new { id = "logoutForm" }))

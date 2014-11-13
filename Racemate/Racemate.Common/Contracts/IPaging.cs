@@ -1,4 +1,4 @@
-﻿namespace Racemate.Web.Models.Common
+﻿namespace Racemate.Common.Contracts
 {
     using System.Collections.Generic;
 

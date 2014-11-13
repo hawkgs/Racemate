@@ -1,0 +1,30 @@
+﻿@using Racemate.Web.Helpers.Html
+@model Racemate.Web.Areas.User.ViewModels.Race.RaceListViewModel
+
+<div class="holder">
+    <table class="grid">
+        <thead>
+            <tr>
+                <th>Name @Html.SorterAnchor("List", "Race", "name", Model.IsDescending)</th>
+                <th>Date @Html.SorterAnchor("List", "Race", "date", Model.IsDescending)</th>
+                <th>Address</th>
+                <th>Type @Html.SorterAnchor("List", "Race", "type", Model.IsDescending)</th>
+                <th>Free Positions @Html.SorterAnchor("List", "Race", "positions", Model.IsDescending)</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var race in Model.Collection)
+            {
+                <tr>
+                    <td>@Html.ActionLink(race.Name, "Details", "Race", new { Id = race.Id }, new { @class = "title" })</td>
+                    <td>@race.DateTimeOfRace</td>
+                    <td>@race.Address</td>
+                    <td>@race.Type</td>
+                    <td>@race.FreeRacePositions</td>
+                    <td>@Html.RaceStatusTag(race.DateTimeOfRace, race.Duration, race.IsFinished, race.IsCanceled, true)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

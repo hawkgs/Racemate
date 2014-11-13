@@ -1,7 +1,7 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Invitations
 {
-    using Racemate.Web.Models.Common;
     using System.Collections.Generic;
+    using Racemate.Common.Contracts;
 
     public class InvitationsViewModel : IPaging<InvitationCodeViewModel>
     {

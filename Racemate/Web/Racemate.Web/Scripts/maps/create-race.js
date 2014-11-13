@@ -3,7 +3,7 @@
 
     var $$routeBuilder = RouteBuilder,
         $$core = MapCore,
-        SUCC_REDRCT_ROUTE = "/User/Home";
+        SUCC_REDRCT_ROUTE = "/User/Race/MyRaces";
 
     // static
     function RaceCreator() {}
