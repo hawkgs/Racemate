@@ -1,10 +1,12 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Race
 {
     using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
     using AutoMapper;
     using Racemate.Data.Models;
     using Racemate.Web.Infrastructure.Mapping;
-
+    
     public class RaceDetailsViewModel : IMapFrom<Race>, IHaveCustomMappings
     {
         public int Id { get; set; }
@@ -41,9 +43,13 @@
 
         public int SpectatorsCount { get; set; }
 
+        public ICollection<ParticipantViewModel> Participants { get; set; }
+
         // Post Properties >>>
 
+        public int UserRaceCarId { get; set; }
 
+        public IEnumerable<SelectListItem> UserCarSelect { get; set; }
 
         // <<< Post Properties
 

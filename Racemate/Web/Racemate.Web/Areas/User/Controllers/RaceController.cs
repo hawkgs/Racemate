@@ -53,16 +53,52 @@
 
             var race = this.data.Races.GetById(raceId);
             var model = Mapper.Map<Race, RaceDetailsViewModel>(race);
+
+            var userVehicles = this.CurrentUser.Cars
+                .Where(c => c.RaceTypes.Any(t => t.Name == model.Type))
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.Id.ToString(),
+                    Text = String.Format("{0} {1}", c.Model.CarMake.Name, c.Model.Name)
+                });
+
             model.EncryptedId = id;
+            model.UserCarSelect = userVehicles;
 
             return this.View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Join()
+        public ActionResult Join(RaceDetailsViewModel model)
         {
-            return this.View();
+            string decryptedId = QueryStringBuilder.DecryptRaceId(model.EncryptedId);
+            int raceId;
+
+            if (!int.TryParse(decryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var raceCar = this.CurrentUser.Cars
+                .FirstOrDefault(c => c.Id == model.UserRaceCarId);
+
+            if (raceCar == null)
+            {
+                // error
+            }
+
+            var race = this.data.Races.GetById(raceId);
+            var participant = new RaceParticipant()
+            {
+                User = this.CurrentUser,
+                Car = raceCar
+            };
+
+            race.Participants.Add(participant);
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("List");
         }
 
         public JsonResult RaceRoute(string id)

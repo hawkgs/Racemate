@@ -127,6 +127,12 @@ a.button.dark.click {
 
 /**/
 
+form.horizontal > input,
+form.horizontal > select,
+form.horizontal > img {
+    margin-left: 7px;
+}
+
 fieldset {
     border: none;
 }

@@ -20,7 +20,7 @@
 
         public virtual Car Car { get; set; }
 
-        public string RaceId { get; set; }
+        public int RaceId { get; set; }
 
         public virtual Race Race { get; set; }
 

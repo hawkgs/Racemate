@@ -1,0 +1,19 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Home.UserThumbViewModel
+
+<img src="/Images/misc/avatar.png" class="avatar" width="50" height="50" alt="" />
+<div class="member-info">
+    <p class="username">
+        <a href="#">@Model.UserName</a>
+        <span>@Model.Points</span>
+    </p>
+    <hr />
+    <span class="position">
+        <span class="medal gold">1</span> @Model.FirstPlaces
+    </span>
+    <span class="position">
+        <span class="medal silver">2</span> @Model.SecondPlaces
+    </span>
+    <span class="position">
+        <span class="medal bronze">3</span> @Model.ThirdPlaces
+    </span>
+</div>

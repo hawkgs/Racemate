@@ -40,23 +40,7 @@
     @foreach (var user in Model.TopMembers)
     {
         <div class="member-thumb container">
-            <img src="/Images/misc/avatar.png" class="avatar" width="50" height="50" alt="" />
-            <div class="member-info">
-                <p class="username">
-                    <a href="#">@user.UserName</a>
-                    <span>@user.Points</span>
-                </p>
-                <hr />
-                <span class="position">
-                    <span class="medal gold">1</span> @user.FirstPlaces
-                </span>
-                <span class="position">
-                    <span class="medal silver">2</span> @user.SecondPlaces
-                </span>
-                <span class="position">
-                    <span class="medal bronze">3</span> @user.ThirdPlaces
-                </span>
-            </div>
+            @Html.Partial("_MemberThumbCore", user)
         </div>
     }
 </div>
