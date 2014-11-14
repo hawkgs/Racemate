@@ -6,7 +6,7 @@
 }
 
 <h2>
-    @ViewBag.Title
+    <span>@ViewBag.Title</span>
 
     @if (!Model.IsFinished && 
         !Model.IsCanceled && 
@@ -22,6 +22,11 @@
                 @Html.DropDownListFor(m => m.UserRaceCarId, Model.UserCarSelect, new { @class = "dark" })
                 <input type="submit" class="green" value="JOIN RACE" />
         }
+    }
+    
+    @if (Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name))
+    {
+        <button class="pop-up-btn orange pull-right" data-window="leave">LEAVE</button>
     }
 </h2>
 
@@ -223,6 +228,23 @@
         }
     </div>
 }
+<div id="pop-ups">
+    <div class="pop-up-window" data-wid="leave">
+        <div class="window">
+            <div class="title-bar">
+                <span>Leave Race</span>
+                <div class="close cl-action">&#10060;</div>
+            </div>
+            <div class="content">
+                <p>Are you sure you want to leave "@Model.Name" race?</p>
+                <div>
+                    <button class="green">Yes, I do</button>
+                    <button class="orange cl-action">No, I don't</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section styles {
     @Styles.Render("~/Content/raceDetails")
@@ -230,5 +252,5 @@
 
 @section scripts {
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-    @Scripts.Render("~/bundle/visualizeRoute");
+    @Scripts.Render("~/bundle/visualizeRoute")
 }

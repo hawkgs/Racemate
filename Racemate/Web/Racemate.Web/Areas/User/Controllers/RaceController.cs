@@ -95,6 +95,11 @@
                 Car = raceCar
             };
 
+            if (race.Participants.Count == race.AvailableRacePositions)
+            {
+                // no free places
+            }
+
             race.Participants.Add(participant);
             this.data.SaveChanges();
 

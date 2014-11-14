@@ -25,6 +25,8 @@
 
         public int AvailableRacePositions { get; set; }
 
+        public int FreeRacePositions { get; set; }
+
         public string Address { get; set; }
 
         public float Distance { get; set; }
@@ -57,11 +59,13 @@
         {
             configuration.CreateMap<Race, RaceDetailsViewModel>()
                 .ForMember(dest => dest.Type,
-                            opts => opts.MapFrom(src => src.Type.Name))
+                           opts => opts.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.Organizer,
-                            opts => opts.MapFrom(src => src.Organizer.UserName))
+                           opts => opts.MapFrom(src => src.Organizer.UserName))
                 .ForMember(dest => dest.SpectatorsCount,
-                            opts => opts.MapFrom(src => src.Spectators.Count));
+                           opts => opts.MapFrom(src => src.Spectators.Count))
+                .ForMember(dest => dest.FreeRacePositions,
+                           opts => opts.MapFrom(src => src.AvailableRacePositions - src.Participants.Count));
         }
     }
 }

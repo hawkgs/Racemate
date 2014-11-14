@@ -10,6 +10,7 @@
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
                 "~/Scripts/libs/jquery-{version}.js",
                 "~/Scripts/header-menu-light-switcher.js",
+                "~/Scripts/pop-up-window.js",
                 "~/Scripts/common.js",
                 "~/Scripts/menus.js"
             ));
