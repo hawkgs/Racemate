@@ -7,8 +7,6 @@
 
     public class BaseController : Controller
     {
-        protected const int PAGE_SIZE = 3;
-
         protected readonly IRacemateData data;
 
         protected virtual User CurrentUser

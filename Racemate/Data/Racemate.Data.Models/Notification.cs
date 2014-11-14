@@ -15,6 +15,7 @@
         public virtual User User { get; set; }
 
         [Required]
+        [StringLength(250)]
         public string Message { get; set; }
 
         public bool IsSeen { get; set; }

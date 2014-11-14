@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace Racemate.Web.Areas.Administration.Controllers
+﻿namespace Racemate.Web.Areas.Administration.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
     [Authorize(Roles = "Admin")]
     public class ReportsController : Controller
     {
         public ActionResult Index()
         {
-            return View();
+            return this.View();
         }
     }
 }

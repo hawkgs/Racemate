@@ -1,8 +1,7 @@
-﻿using System.Web;
-using System.Web.Optimization;
-
-namespace Racemate.Web
+﻿namespace Racemate.Web
 {
+    using System.Web.Optimization;
+
     public class BundleConfig
     {
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
@@ -11,11 +10,13 @@ namespace Racemate.Web
             bundles.Add(new ScriptBundle("~/bundles/main").Include(
                 "~/Scripts/libs/jquery-{version}.js",
                 "~/Scripts/header-menu-light-switcher.js",
+                "~/Scripts/common.js",
                 "~/Scripts/menus.js"
             ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                        "~/Scripts/libs/jquery.validate*"));
+                "~/Scripts/libs/jquery.validate*"
+            ));
 
             bundles.Add(new ScriptBundle("~/bundles/createRace").Include(
                 "~/Scripts/jquery.datetimepicker.js",
@@ -24,13 +25,18 @@ namespace Racemate.Web
                 "~/Scripts/maps/create-race.js"
             ));
 
+            bundles.Add(new ScriptBundle("~/bundle/visualizeRoute").Include(
+                "~/Scripts/maps/map-core.js",
+                "~/Scripts/maps/route-builder.js",
+                "~/Scripts/maps/visualize-route.js"
+            ));
+
             bundles.Add(new ScriptBundle("~/bundles/globalMap").Include(
                 "~/Scripts/maps/map-core.js",
                 "~/Scripts/maps/global-map.js"
             ));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at http://modernizr.com to pick only the tests you need.
+            // Style bundles
 
             bundles.Add(new StyleBundle("~/Content/public").Include(
                 "~/Content/common.css",
@@ -45,6 +51,10 @@ namespace Racemate.Web
                 "~/Content/forms.css",
                 "~/Content/structure.css",
                 "~/Content/style.css"
+            ));
+
+            bundles.Add(new StyleBundle("~/Content/raceDetails").Include(
+                "~/Content/race.css"
             ));
 
             bundles.Add(new StyleBundle("~/Content/grids").Include(

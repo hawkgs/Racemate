@@ -9,7 +9,7 @@ var MapCore = (function() {
 
     Core.MARKERS_PATH = "../../Images/markers/";
 
-    Core._init = function() {
+    Core._init = function(turnOffLocalization) {
         var mapOptions;
 
         Core.geocoder = new google.maps.Geocoder();
@@ -26,8 +26,10 @@ var MapCore = (function() {
 
         Core.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
         Core.directionsRenderer.setMap(Core.map);
-
-        Core.setCurrentPosition();
+        
+        if (!turnOffLocalization) {
+            Core.setCurrentPosition();
+        }
     };
 
     Core.setCurrentPosition = function() {
@@ -62,9 +64,9 @@ var MapCore = (function() {
         return new google.maps.Marker(template);
     };
 
-    Core.init = function (onMapLoad) {
+    Core.init = function (onMapLoad, turnOffLocalization) {
         google.maps.event.addDomListener(window, "load", function() {
-            Core._init();
+            Core._init(turnOffLocalization);
 
             if (onMapLoad) {
                 onMapLoad();

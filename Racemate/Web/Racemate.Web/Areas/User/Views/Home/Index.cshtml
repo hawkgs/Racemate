@@ -18,7 +18,7 @@
             {
                 <div class="race-thumb">
                     <p>
-                        @Html.ActionLink(race.Name, "Details", "Race", new { Id = race.Id }, new { @class = "title" })
+                        @Html.RaceDetailsLink(race.Id, race.Name)
                         @Html.RaceStatusTag(race.DateTimeOfRace, race.Duration, race.IsFinished, race.IsCanceled, true)
                     </p>
                     <hr />

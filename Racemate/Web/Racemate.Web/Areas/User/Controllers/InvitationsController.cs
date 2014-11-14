@@ -1,18 +1,19 @@
-﻿using Racemate.Data;
-using Racemate.Web.Controllers.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Generators;
-using Racemate.Data.Models;
-using Racemate.Web.Areas.User.ViewModels.Invitations;
-using AutoMapper.QueryableExtensions;
-using Racemate.Common;
-
-namespace Racemate.Web.Areas.User.Controllers
+﻿namespace Racemate.Web.Areas.User.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
+    using AutoMapper.QueryableExtensions;
+
+    using Generators;
+
+    using Racemate.Data;
+    using Racemate.Data.Models;
+    using Racemate.Web.Areas.User.ViewModels.Invitations;
+    using Racemate.Web.Controllers.Common;
+    using Racemate.Common;
+
     [Authorize]
     public class InvitationsController : BaseController
     {
@@ -37,11 +38,11 @@ namespace Racemate.Web.Areas.User.Controllers
 
             var mappedCodes = invitationCodes
                 .OrderByDescending(i => i.CreatedOn)
-                .Skip(pageParam * PAGE_SIZE)
-                .Take(PAGE_SIZE)
+                .Skip(pageParam * GlobalConstants.PAGE_SIZE)
+                .Take(GlobalConstants.PAGE_SIZE)
                 .Project().To<InvitationCodeViewModel>();
 
-            int pageCount = Paging.GetPageCount(invitationCodes.Count(), PAGE_SIZE);
+            int pageCount = Paging.GetPageCount(invitationCodes.Count(), GlobalConstants.PAGE_SIZE);
 
             return this.View(new InvitationsViewModel() {
                 Collection = mappedCodes,

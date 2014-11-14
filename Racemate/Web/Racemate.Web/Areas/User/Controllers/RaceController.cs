@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Racemate.Web.Controllers.Common;
-using Racemate.Data;
-using Racemate.Web.Areas.User.ViewModels.Race;
-using System.Net;
-using AutoMapper;
-using Racemate.Data.Models;
-using System.Data.Entity.Validation;
-using AutoMapper.QueryableExtensions;
-using Racemate.Common;
-using Racemate.Web.Areas.User.ViewModels.Home;
-using Racemate.Common.Contracts;
-
-namespace Racemate.Web.Areas.User.Controllers
+﻿namespace Racemate.Web.Areas.User.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Net;
+    using System.Web.Mvc;
+
+    using AutoMapper;
+    using AutoMapper.QueryableExtensions;
+
+    using Newtonsoft.Json;
+
+    using Racemate.Common;
+    using Racemate.Common.Contracts;
+    using Racemate.Data;
+    using Racemate.Data.Models;
+    using Racemate.Web.Areas.User.ViewModels.Home;
+    using Racemate.Web.Areas.User.ViewModels.Race;
+    using Racemate.Web.Controllers.Common;
+
     [Authorize]
     public class RaceController : BaseController
     {
@@ -38,6 +39,49 @@ namespace Racemate.Web.Areas.User.Controllers
                 .Where(r => r.OrganizerId == this.CurrentUser.Id);
 
             return this.RaceList(races, page, sortBy, order);
+        }
+
+        public ActionResult Details(string id)
+        {
+            string decryptedId = QueryStringBuilder.DecryptRaceId(id);
+            int raceId;
+
+            if (!int.TryParse(decryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var race = this.data.Races.GetById(raceId);
+            var model = Mapper.Map<Race, RaceDetailsViewModel>(race);
+            model.EncryptedId = id;
+
+            return this.View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Join()
+        {
+            return this.View();
+        }
+
+        public JsonResult RaceRoute(string id)
+        {
+            string decryptedId = QueryStringBuilder.DecryptRaceId(id);
+            int raceId;
+
+            if (!int.TryParse(decryptedId, out raceId))
+            {
+                this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                return this.Json("Invalid race ID", JsonRequestBehavior.AllowGet);
+            }
+
+            var race = this.data.Races.GetById(raceId);
+            var model = Mapper.Map<Race, RaceRouteDataModel>(race);
+            var serialized = JsonConvert.SerializeObject(model);
+
+            return this.Json(serialized, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Create()
@@ -65,8 +109,7 @@ namespace Racemate.Web.Areas.User.Controllers
                 return Json(errors);
             }
 
-            var raceType = this.data.RaceTypes.All()
-                .FirstOrDefault(r => r.Id == model.TypeId);
+            var raceType = this.data.RaceTypes.GetById(model.TypeId);
 
             if (raceType == null)
             {
@@ -104,7 +147,7 @@ namespace Racemate.Web.Areas.User.Controllers
             switch (sortBy)
             {
                 case "name":
-                    isDescending = sorter.SortBy(order, isDescending, r => r.DateTimeOfRace);
+                    isDescending = sorter.SortBy(order, isDescending, r => r.Name);
                     break;
                 case "date":
                     isDescending = sorter.SortBy(order, isDescending, r => r.DateTimeOfRace);
@@ -120,11 +163,11 @@ namespace Racemate.Web.Areas.User.Controllers
                     break;
             }
 
-            var modelRaces = sorter.Collection.Skip(pageParam * PAGE_SIZE)
-                .Take(PAGE_SIZE)
+            var modelRaces = sorter.Collection.Skip(pageParam * GlobalConstants.PAGE_SIZE)
+                .Take(GlobalConstants.PAGE_SIZE)
                 .Project().To<RaceThumbViewModel>();
 
-            int pageCount = Paging.GetPageCount(races.Count(), PAGE_SIZE);
+            int pageCount = Paging.GetPageCount(races.Count(), GlobalConstants.PAGE_SIZE);
 
             return this.View(new RaceListViewModel()
             {

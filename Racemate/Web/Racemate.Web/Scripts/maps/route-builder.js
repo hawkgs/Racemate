@@ -9,14 +9,14 @@ var RouteBuilder = (function() {
 
     Builder.markers = [];
 
+    // TODO: Refactor
     Builder.drawRoute = function(distanceCallback, addressCallback) {
         var wayPointsLatLng = [],
             start = Builder.markers[0],
             finish = Builder.markers[Builder.markers.length - 1],
             waypoints = Builder.markers.slice(1, Builder.markers.length - 1),
             finishPointLatLng,
-            startPointLatLng,
-            request;
+            startPointLatLng;
 
         finishPointLatLng = new google.maps.LatLng(start.getPosition().lat(), start.getPosition().lng());
         startPointLatLng = new google.maps.LatLng(finish.getPosition().lat(), finish.getPosition().lng());
@@ -30,15 +30,19 @@ var RouteBuilder = (function() {
             });
         });
 
-        request = {
-            origin: startPointLatLng,
-            destination: finishPointLatLng,
-            waypoints: wayPointsLatLng,
+        Builder.generateRoute(startPointLatLng, finishPointLatLng, wayPointsLatLng, distanceCallback);
+    };
+
+    Builder.generateRoute = function(start, finish, waypoints, distanceCallback) {
+        var request = {
+            origin: start,
+            destination: finish,
+            waypoints: waypoints,
             optimizeWaypoints: true,
             travelMode: google.maps.TravelMode.DRIVING
         };
 
-        $$core.directionsService.route(request, function(response, status) {
+        $$core.directionsService.route(request, function (response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
                 var legs = response.routes[0].legs,
                     totalDistance = 0,
@@ -46,13 +50,15 @@ var RouteBuilder = (function() {
 
                 $$core.directionsRenderer.setDirections(response);
 
-                for (i = 0; i < legs.length; i+=1) {
+                for (i = 0; i < legs.length; i += 1) {
                     totalDistance += legs[i].distance.value;
                 }
 
                 Builder.distance = totalDistance / KILOMETER;
 
-                distanceCallback(Builder.distance);
+                if (distanceCallback) {
+                    distanceCallback(Builder.distance);
+                }
             }
         });
     };
@@ -67,7 +73,9 @@ var RouteBuilder = (function() {
                 Builder.address = "Unknown";
             }
 
-            callback(Builder.address);
+            if (callback) {
+                callback(Builder.address);
+            }
         });
     };
 

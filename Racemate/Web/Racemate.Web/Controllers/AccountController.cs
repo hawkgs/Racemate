@@ -1,23 +1,22 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Racemate.Web.Models;
-using Racemate.Data.Models;
-using Racemate.Data;
-
-namespace Racemate.Web.Controllers
+﻿namespace Racemate.Web.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web;
+    using System.Web.Mvc;
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.Owin;
+    using Microsoft.Owin.Security;
+    using Racemate.Web.Models;
+    using Racemate.Data.Models;
+    using Racemate.Data;
+
     [Authorize]
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
+        private ApplicationSignInManager _signInManager;
 
         public AccountController()
         {
@@ -55,8 +54,6 @@ namespace Racemate.Web.Controllers
             return View();
         }
 
-        private ApplicationSignInManager _signInManager;
-
         public ApplicationSignInManager SignInManager
         {
             get
@@ -91,7 +88,7 @@ namespace Racemate.Web.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ModelState.AddModelError(String.Empty, "Invalid login attempt.");
                     return View(model);
             }
         }
@@ -126,7 +123,7 @@ namespace Racemate.Web.Controllers
 
             if (invitationCode == null)
             {
-                ModelState.AddModelError("", "The provided invitation code is invalid or already in use.");
+                ModelState.AddModelError(String.Empty, "The provided invitation code is invalid or already in use.");
             }
             else if (ModelState.IsValid)
             {
@@ -187,7 +184,7 @@ namespace Racemate.Web.Controllers
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError("", error);
+                ModelState.AddModelError(String.Empty, error);
             }
         }
 

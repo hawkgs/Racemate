@@ -10,14 +10,13 @@
     {
         public Race()
         {
-            this.Id = Guid.NewGuid().ToString();
             this.Routepoints = new HashSet<RaceRoutePoint>();
             this.Participants = new HashSet<RaceParticipant>();
             this.Spectators = new HashSet<RaceSpectator>();
         }
 
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public DateTime DateTimeOfRace { get; set; }
 
@@ -27,13 +26,19 @@
 
         public virtual User Organizer { get; set; }
 
-        public RaceType Type { get; set; }
+        public int TypeId { get; set; }
+
+        public virtual RaceType Type { get; set; }
 
         public int AvailableRacePositions { get; set; }
 
+        [StringLength(250)]
         public string Address { get; set; }
 
         public float Distance { get; set; }
+
+        [StringLength(30)]
+        public string Name { get; set; }
 
         public bool IsFinished { get; set; }
 
@@ -49,14 +54,14 @@
 
         // Optional
 
-        public string Name { get; set; }
-
         public int? MoneyBet { get; set; }
 
+        [StringLength(30)]
         public string Password { get; set; }
 
         public bool IsCanceled { get; set; }
 
+        [StringLength(500)]
         public string Description { get; set; }
 
         [Index]

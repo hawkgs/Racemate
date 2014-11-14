@@ -68,7 +68,7 @@ namespace Racemate.Web.App_Start
             kernel.Bind(typeof(IRepository<>)).To(typeof(GenericRepository<>));
             kernel.Bind(typeof(IDeletableEntityRepository<>)).To(typeof(DeletableEntityRepository<>));
             kernel.Bind<IRacemateData>().To<RacemateData>()
-                .WithConstructorArgument("context", c => new RacemateDbContext());
+                .WithConstructorArgument("context", c => RacemateDbContext.Create());
         }        
     }
 }

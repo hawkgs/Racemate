@@ -17,7 +17,7 @@
             @foreach (var race in Model.Collection)
             {
                 <tr>
-                    <td>@Html.ActionLink(race.Name, "Details", "Race", new { Id = race.Id }, new { @class = "title" })</td>
+                    <td>@Html.RaceDetailsLink(race.Id, race.Name)</td>
                     <td>@race.DateTimeOfRace</td>
                     <td>@race.Address</td>
                     <td>@race.Type</td>

@@ -1,19 +1,18 @@
-﻿using Racemate.Data;
-using Racemate.Web.Areas.User.ViewModels.Home;
-using Racemate.Web.Controllers.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using System.Web.Caching;
-using Racemate.Data.Models;
-using System.Net;
-
-namespace Racemate.Web.Areas.User.Controllers
+﻿namespace Racemate.Web.Areas.User.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc; 
+    using System.Web.Caching;
+
+    using AutoMapper.QueryableExtensions;
+
+    using Racemate.Data;
+    using Racemate.Web.Areas.User.ViewModels.Home;
+    using Racemate.Web.Controllers.Common;
+
     [Authorize]
     public class HomeController : BaseController
     {

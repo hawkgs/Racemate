@@ -21,6 +21,7 @@
         public ReportType ReportType { get; set; }
 
         [Required]
+        [StringLength(500)]
         public string Description { get; set; }
 
         public DateTime IssuedOn { get; set; }

@@ -18,6 +18,7 @@
 
         public Race Race { get; set; }
 
+        [StringLength(150)]
         public string Message { get; set; }
 
         public DateTime AddedOn { get; set; }

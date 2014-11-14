@@ -35,7 +35,24 @@
     };
 
     Global.bindEvents = function () {
+        $("#enlarge-map").click(function () {
+            $("#map-canvas").css({
+                position: "fixed",
+                width: "100%",
+                height: "100%",
+                top: $("#main-header").height(),
+                left: "0"
+            });
 
+            $(this).css({
+                position: "fixed",
+                right: "5px",
+                bottom: "10px"
+            });
+
+            google.maps.event.trigger($$core.map, "resize");
+        });
+       
     };
 
     Global.enlargeMap = function () {

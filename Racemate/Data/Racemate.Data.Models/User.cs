@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Security.Claims;
     using System.Threading.Tasks;
@@ -25,6 +26,7 @@
             return userIdentity;
         }
 
+        [DefaultValue(50)]
         public int Points { get; set; }
 
         public bool IsBanned { get; set; }

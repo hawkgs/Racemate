@@ -2,6 +2,8 @@
 {
     using System;
     using System.Web.Mvc;
+    using System.Web.Mvc.Html;
+    using Racemate.Common;
 
     public static class RaceHelpersExtensions
     {
@@ -17,12 +19,29 @@
             return new MvcHtmlString(address);
         }
 
+        public static MvcHtmlString RaceDetailsLink(this HtmlHelper helper, int id, string name)
+        {
+            string encryptedId = QueryStringBuilder.EncryptRaceId(id, name);
+
+            return LinkExtensions.ActionLink(helper, name, "Details", "Race", new { Id = encryptedId }, new { @class = "title" });
+        }
+
+        public static MvcHtmlString RaceTypeImage(this HtmlHelper helper, string typeName)
+        {
+            var div = new TagBuilder("div");
+
+            div.AddCssClass(typeName.ToLower().Replace(' ', '-'));
+            div.MergeAttribute("id", "race-type");
+
+            return new MvcHtmlString(div.ToString());
+        }
+
         public static MvcHtmlString RaceStatusTag(this HtmlHelper helper,
             DateTime dateTime,
             int duration,
             bool isFinished,
             bool isCanceled,
-            bool isForHome)
+            bool isForHome = false)
         {
             string name = String.Empty;
             string homeClass = isForHome ? "home" : String.Empty;

@@ -1,0 +1,345 @@
+﻿@using Racemate.Web.Helpers.Html
+
+@model Racemate.Web.Areas.User.ViewModels.Race.RaceDetailsViewModel
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>
+    @ViewBag.Title
+
+    @using (Html.BeginForm("Join", "Race", FormMethod.Post, new { @class = "pull-right" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.EncryptedId)
+        <input type="submit" class="green pull-right" value="JOIN RACE" />
+    }
+</h2>
+
+<div class="holder">
+    <section class="content">
+        <div id="map-canvas" class="container"></div>
+        <div id="chat" class="half container">
+            <ul class="messages">
+                <li><strong>Pesho:</strong> u got rekt m8</li>
+                <li><strong>Pesho:</strong> u got rekt m8</li>
+            </ul>
+            <div class="input">
+                <input type="text" placeholder="Write a chat message" size="35" class="dark" />
+                <input type="submit" value="Send" class="dark" />
+            </div>
+        </div>
+        <div class="half pad-right container">
+            <h3>Description</h3>
+            @if (String.IsNullOrEmpty(Model.Description))
+            {
+                <p class="grey">No description</p>
+            }
+            else
+            {
+                <p>@Model.Description</p>
+            }
+            <hr class="space" />
+            <h3>Evaluate the Race</h3>
+            <form>
+                <fieldset>
+                    <div>
+                        <label for="oragnization-pts">Organization Points</label>
+                        <input id="oragnization-pts" type="number" />
+                    </div>
+                    <div>
+                        <label for="safety-pts">Safety Points</label>
+                        <input id="safety-pts" type="number" />
+                    </div>
+                    <div>
+                        <input type="submit" class="green" value="Evaluate" />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </section>
+    <section class="side pad-right">
+        <div class="container">
+            <div class="msg error">4 police alerts</div>
+            <div id="race-countdown">--:--:--</div>
+            @if (Model.DateTimeOfRace > DateTime.Now)
+            {
+                <p id="countdown-info">Time left to the start of the race</p>
+            }
+            else if (Model.DateTimeOfRace.AddHours(Model.Duration) > DateTime.Now)
+            {
+                <p id="countdown-info">Time left to the end of the race</p>
+            }
+            <hr />
+            <h3 class="race-title">@Model.Type</h3>
+            @Html.RaceTypeImage(Model.Type)
+            <div id="race-status">
+                @Html.RaceStatusTag(Model.DateTimeOfRace, Model.Duration, Model.IsFinished, Model.IsCanceled)
+            </div>
+            <h4 class="race-title">@Model.DateTimeOfRace</h4>
+            <hr />
+            <table class="positions">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Username</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="#">Pesho</a></td>
+                        <td>3:43</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><a href="#">Pesho</a></td>
+                        <td>3:43</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><a href="#">Pesho</a></td>
+                        <td>3:43</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><a href="#">Pesho</a></td>
+                        <td>3:43</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><a href="#">Pesho</a></td>
+                        <td>3:43</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            <div id="evaluation">
+                <div>
+                    <p>2342</p>
+                    <p>Organization</p>
+                </div>
+                <div>
+                    <p>2342</p>
+                    <p>Safety</p>
+                </div>
+                <div>
+                    <p>2342</p>
+                    <p>Entertainment</p>
+                </div>
+            </div>
+            <hr />
+            <table class="race-details">
+                <tr>
+                    <td><div class="rc-detail location"></div> Location</td>
+                    <td>@Model.Address</td>
+                </tr>
+                <tr>
+                    <td><div class="rc-detail distance"></div> Distance</td>
+                    <td>@Model.Distance km</td>
+                </tr>
+                <tr>
+                    <td><div class="rc-detail duration"></div> Duration</td>
+                    <td>@Model.Duration hr</td>
+                </tr>
+                @if (Model.MoneyBet.HasValue)
+                {
+                    <tr>
+                        <td><div class="rc-detail bet"></div> Bet</td>
+                        <td>@Model.MoneyBet lv</td>
+                    </tr>
+                }
+                <tr>
+                    <td><div class="rc-detail organizer"></div> Organizer</td>
+                    <td><a href="#">@Model.Organizer</a></td>
+                </tr>
+                <tr>
+                    <td><div class="rc-detail racers"></div> Racers</td>
+                    <td>5 (out of @Model.AvailableRacePositions)</td>
+                </tr>
+                <tr>
+                    <td><div class="rc-detail spectators"></div> Spectators</td>
+                    <td>@Model.SpectatorsCount</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
+<h2>Set Positions</h2>
+<div id="set-positions" class="holder container">
+    <div class="msg note">Please, set the finish positions and time for the racers. Be advised that the data must be confirmed from respective racer in order to be taken in count.</div>
+    <form>
+        <fieldset>
+            <div class="row">
+                <div class="col">
+                    <p class="title">peshoWrxa</p>
+                    <input type="number" placeholder="Position" /><br />
+                    <input type="text" placeholder="Time (MM:SS)" />
+                </div>
+                <div class="col">
+                    <p class="title">peshoWrxa</p>
+                    <input type="number" placeholder="Position" /><br />
+                    <input type="text" placeholder="Time (MM:SS)" />
+                </div>
+                <div class="col">
+                    <p class="title">peshoWrxa</p>
+                    <input type="number" placeholder="Position" /><br />
+                    <input type="text" placeholder="Time (MM:SS)" />
+                </div>
+                <div class="col">
+                    <p class="title">peshoWrxa</p>
+                    <input type="number" placeholder="Position" /><br />
+                    <input type="text" placeholder="Time (MM:SS)" />
+                </div>
+            </div>
+            <div class="row">
+                <input type="submit" class="green" value="Set Positions" />
+            </div>
+        </fieldset>
+    </form>
+</div>
+<h2>Racers</h2>
+<div class="holder">
+    <div class="car-info container">
+        <div class="member-thumb">
+            <img src="img/misc/avatar.png" class="avatar" width="50" height="50" alt="" />
+            <div class="member-info">
+                <p class="username">
+                    <a href="#">peshoWrxa</a>
+                    <span>65433</span>
+                </p>
+                <hr />
+                <span class="position">
+                    <span class="medal gold">1</span> 233
+                </span>
+                <span class="position">
+                    <span class="medal silver">2</span> 155
+                </span>
+                <span class="position">
+                    <span class="medal bronze">3</span> 155
+                </span>
+            </div>
+        </div>
+        <div class="title">Subaru Impreza WRX STI</div>
+        <div class="data">
+            <div class="hp-ton" title="HP per ton">984</div>
+            <ul class="general-data">
+                <li>Horsepower <span>125 hp</span></li>
+                <li>Weight <span>3124 kg</span></li>
+                <li>Torque <span>5323 N&CenterDot;m</span></li>
+                <li>Aspiration <span>Turbocharged</span></li>
+                <li>Displacement <span>5220 cc</span></li>
+                <li>Year of Prod <span>2014</span></li>
+            </ul>
+            <div class="types">
+                <div class="type rally" title="Rally"></div>
+                <div class="type drag" title="Drag"></div>
+                <div class="type drift" title="Drift"></div>
+                <div class="type race" title="Race"></div>
+            </div>
+        </div>
+        <div class="extras">
+            <div class="extra on"><p>Launch Ctrl</p></div>
+            <div class="extra on"><p>Antilag</p></div>
+            <div class="extra"><p>N2O</p></div>
+        </div>
+    </div>
+    <div class="car-info container">
+        <div class="member-thumb">
+            <img src="img/misc/avatar.png" class="avatar" width="50" height="50" alt="" />
+            <div class="member-info">
+                <p class="username">
+                    <a href="#">peshoWrxa</a>
+                    <span>65433</span>
+                </p>
+                <hr />
+                <span class="position">
+                    <span class="medal gold">1</span> 233
+                </span>
+                <span class="position">
+                    <span class="medal silver">2</span> 155
+                </span>
+                <span class="position">
+                    <span class="medal bronze">3</span> 155
+                </span>
+            </div>
+        </div>
+        <div class="title">Subaru Impreza WRX STI</div>
+        <div class="data">
+            <div class="hp-ton" title="HP per ton">984</div>
+            <ul class="general-data">
+                <li>Horsepower <span>125 hp</span></li>
+                <li>Weight <span>3124 kg</span></li>
+                <li>Torque <span>5323 N&CenterDot;m</span></li>
+                <li>Aspiration <span>Turbocharged</span></li>
+                <li>Displacement <span>5220 cc</span></li>
+                <li>Year of Prod <span>2014</span></li>
+            </ul>
+            <div class="types">
+                <div class="type rally" title="Rally"></div>
+                <div class="type drag" title="Drag"></div>
+                <div class="type drift" title="Drift"></div>
+                <div class="type race" title="Race"></div>
+            </div>
+        </div>
+        <div class="extras">
+            <div class="extra on"><p>Launch Ctrl</p></div>
+            <div class="extra on"><p>Antilag</p></div>
+            <div class="extra"><p>N2O</p></div>
+        </div>
+    </div>
+    <div class="car-info container">
+        <div class="member-thumb">
+            <img src="img/misc/avatar.png" class="avatar" width="50" height="50" alt="" />
+            <div class="member-info">
+                <p class="username">
+                    <a href="#">peshoWrxa</a>
+                    <span>65433</span>
+                </p>
+                <hr />
+                <span class="position">
+                    <span class="medal gold">1</span> 233
+                </span>
+                <span class="position">
+                    <span class="medal silver">2</span> 155
+                </span>
+                <span class="position">
+                    <span class="medal bronze">3</span> 155
+                </span>
+            </div>
+        </div>
+        <div class="title">Subaru Impreza WRX STI</div>
+        <div class="data">
+            <div class="hp-ton" title="HP per ton">984</div>
+            <ul class="general-data">
+                <li>Horsepower <span>125 hp</span></li>
+                <li>Weight <span>3124 kg</span></li>
+                <li>Torque <span>5323 N&CenterDot;m</span></li>
+                <li>Aspiration <span>Turbocharged</span></li>
+                <li>Displacement <span>5220 cc</span></li>
+                <li>Year of Prod <span>2014</span></li>
+            </ul>
+            <div class="types">
+                <div class="type rally" title="Rally"></div>
+                <div class="type drag" title="Drag"></div>
+                <div class="type drift" title="Drift"></div>
+                <div class="type race" title="Race"></div>
+            </div>
+        </div>
+        <div class="extras">
+            <div class="extra on"><p>Launch Ctrl</p></div>
+            <div class="extra on"><p>Antilag</p></div>
+            <div class="extra"><p>N2O</p></div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    @Styles.Render("~/Content/raceDetails")
+}
+
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    @Scripts.Render("~/bundle/visualizeRoute");
+}

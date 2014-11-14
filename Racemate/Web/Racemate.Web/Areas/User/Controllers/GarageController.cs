@@ -1,18 +1,19 @@
-﻿using Racemate.Data;
-using Racemate.Data.Models;
-using Racemate.Web.Areas.User.ViewModels.Garage;
-using Racemate.Web.Controllers.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using AutoMapper.QueryableExtensions;
-using System.Web.Caching;
-using AutoMapper;
-
-namespace Racemate.Web.Areas.User.Controllers
+﻿namespace Racemate.Web.Areas.User.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using System.Web.Caching;
+
+    using AutoMapper;
+    using AutoMapper.QueryableExtensions;
+
+    using Racemate.Data;
+    using Racemate.Data.Models;
+    using Racemate.Web.Areas.User.ViewModels.Garage;
+    using Racemate.Web.Controllers.Common;
+
     [Authorize]
     public class GarageController : BaseController
     {
@@ -55,8 +56,7 @@ namespace Racemate.Web.Areas.User.Controllers
 
             if (int.TryParse(this.Request["CarModelId"], out carModelId))
             {
-                carModel = this.data.CarModels.All()
-                    .FirstOrDefault(c => c.Id == carModelId);
+                carModel = this.data.CarModels.GetById(carModelId);
             }
 
             // TODO: Fix that shit
