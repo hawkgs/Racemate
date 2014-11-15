@@ -1,10 +1,14 @@
 ﻿namespace Racemate.Data
 {
+    using System.Data.Entity;
     using Racemate.Data.Models;
     using Racemate.Data.Common.Repository;
 
     public interface IRacemateData
     {
+        // TODO: Create an abstraction
+        DbContext Context { get; }
+
         IRepository<User> Users { get; }
 
         IRepository<InvitationCode> InvitationCodes { get; }

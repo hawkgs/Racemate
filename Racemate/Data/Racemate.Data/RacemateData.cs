@@ -18,6 +18,11 @@
             this.repositories = new Dictionary<Type, object>();
         }
 
+        public DbContext Context
+        {
+            get { return this.context; }
+        }
+
         public IRepository<User> Users
         {
             get { return this.GetRepository<User>(); }

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Racemate.Common.Contracts;
 
-    public class InvitationsViewModel : IPaging<InvitationCodeViewModel>
+    public class InvitationsViewModel : IPageable<InvitationCodeViewModel>
     {
         public IEnumerable<InvitationCodeViewModel> Collection { get; set; }
 

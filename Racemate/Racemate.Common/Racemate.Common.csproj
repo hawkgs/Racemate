@@ -39,7 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\IPaging.cs" />
+    <Compile Include="Contracts\IPageable.cs" />
     <Compile Include="Contracts\ISortable.cs" />
     <Compile Include="Contracts\ISorter.cs" />
     <Compile Include="GlobalConstants.cs" />

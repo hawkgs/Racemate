@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public interface IPaging<T>
+    public interface IPageable<T>
         where T : class
     {
         IEnumerable<T> Collection { get; }

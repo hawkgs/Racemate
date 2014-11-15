@@ -5,6 +5,8 @@
 
 # Build results
 
+kendo/
+Libraries/
 packages/
 [Dd]ebug/
 [Rr]elease/
@@ -12,7 +14,6 @@ x64/
 build/
 [Bb]in/
 [Oo]bj/
-Properties/
 
 *.dat
 *.dat.tmp

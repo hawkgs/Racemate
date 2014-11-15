@@ -1,0 +1,51 @@
+﻿@using Racemate.Web.Areas.Administration.ViewModels.CarMakes;
+@model IEnumerable<CarMakeViewModel>
+@{
+    ViewBag.Title = "Car Makes";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo()
+    .Grid<CarMakeViewModel>()
+    .Name("CarMakesGrid")
+    .Columns(col =>
+    {
+        col.Bound(pr => pr.Id);
+        col.Bound(pr => pr.Name);
+        col.Command(com => com.Edit()).Title("Edit");
+        col.Command(com => com.Destroy()).Title("Delete");
+    })
+    .Pageable(page => page.Refresh(true))
+    .Sortable()
+    .Groupable()
+    .Editable(edit =>
+    {
+        edit.Mode(GridEditMode.PopUp);
+    })
+    .Filterable()
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create();
+    })
+    .DataSource(data =>
+        data
+        .Ajax()
+        .Model(m => m.Id(make => make.Id))
+        .Read(read => read.Action("Read", "CarMakes"))
+        .Create(create => create.Action("Create", "CarMakes"))
+        .Update(update => update.Action("Update", "CarMakes"))
+        .Destroy(destroy => destroy.Action("Destroy", "CarMakes"))
+        )
+)
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/kendo")
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/kendo")
+}

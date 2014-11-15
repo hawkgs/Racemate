@@ -4,7 +4,7 @@
     using Racemate.Web.Areas.User.ViewModels.Home;
     using Racemate.Common.Contracts;
 
-    public class RaceListViewModel : IPaging<RaceThumbViewModel>, ISortable
+    public class RaceListViewModel : IPageable<RaceThumbViewModel>, ISortable
     {
         public IEnumerable<RaceThumbViewModel> Collection { get; set; }
 

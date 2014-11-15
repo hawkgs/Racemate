@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using Racemate.Common;
+@using Microsoft.AspNet.Identity
 @{
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
 }
@@ -15,7 +16,7 @@
                 </a>
                 <a href="@Url.Action("List", "Race", new { Area = "User" })" title="Races" class="nav-item races"></a>
                 <div class="nav-item members" title="Members"></div>
-                @if(User.IsInRole("Admin"))
+                @if(User.IsInRole(GlobalConstants.ADMIN))
                 {
                     <a href="@Url.Action("Index", "Reports", new { Area = "Administration" })" title="Reports" class="nav-item reports"></a>
                 }
@@ -45,11 +46,15 @@
                 <div id="profile-menu" class="drop-down-window">
                     <ul>
                         <li><a href="#">My Profile</a></li>
+                        @if (this.User.IsInRole(GlobalConstants.ADMIN))
+                        {
+                            <li>@Html.ActionLink("Car Makes", "Index", "CarMakes", new { Area = "Administration" }, new { })</li>
+                        }
                         <li>@Html.ActionLink("My Races", "MyRaces", "Race", new { Area = "User" }, new { })</li>
                         <li>@Html.ActionLink("Garage", "Index", "Garage", new { Area = "User" }, new { })</li>
                         <li>@Html.ActionLink("Invitations", "Index", "Invitations", new { Area = "User" }, new { })</li>
                         <li>
-                            @using (Html.BeginForm("LogOff", "Account", new { Area = "" }, FormMethod.Post, new { id = "logoutForm" }))
+                            @using (Html.BeginForm("LogOff", "Account", new { Area = string.Empty }, FormMethod.Post, new { id = "logoutForm" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a>
@@ -87,6 +92,6 @@
 }
 
 @section masterScripts {
-    @Scripts.Render("~/bundles/main")
+    @Scripts.Render("~/bundles/general")
     @RenderSection("scripts", required: false)
 }
