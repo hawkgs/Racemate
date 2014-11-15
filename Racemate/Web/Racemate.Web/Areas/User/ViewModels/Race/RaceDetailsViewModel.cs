@@ -44,6 +44,8 @@
 
         public string Description { get; set; }
 
+        public bool IsUserKicked { get; set; }
+
         public ICollection<ParticipantViewModel> Participants { get; set; }
 
         public ICollection<SpectatorViewModel> Spectators { get; set; }
@@ -55,6 +57,8 @@
         public int UserRaceCarId { get; set; }
 
         public string KickUserId { get; set; }
+
+        public IEnumerable<string> KickedRacers { get; set; }
 
         public IEnumerable<SelectListItem> UserCarSelect { get; set; }
 
@@ -71,8 +75,12 @@
                            opts => opts.MapFrom(src => src.Organizer.UserName))
                 .ForMember(dest => dest.Spectators,
                            opts => opts.MapFrom(src => src.Spectators.Where(s => !s.IsDeleted)))
+                .ForMember(dest => dest.KickedRacers,
+                           opts => opts.MapFrom(src => src.Participants
+                                   .Where(s => s.IsKicked).Select(s => s.User.UserName)))
                 .ForMember(dest => dest.Participants,
-                           opts => opts.MapFrom(src => src.Participants.Where(p => !p.IsDeleted)))
+                           opts => opts.MapFrom(src => src.Participants
+                                   .Where(p => !p.IsDeleted && !p.IsKicked).OrderBy(p => p.FinishPosition)))
                 .ForMember(dest => dest.FreeRacePositions,
                            opts => opts.MapFrom(src => 
                                    src.AvailableRacePositions - src.Participants

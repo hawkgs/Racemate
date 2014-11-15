@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Racemate.Web.Areas.User.ViewModels.Race.ParticipantViewModel>
+
+<table class="positions">
+    <thead>
+        <tr>
+            <th>Pos</th>
+            <th>Username</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var participant in Model)
+        {
+            <tr>
+                <td>@participant.FinishPosition</td>
+                <td><a href="#">@participant.Participant.UserName</a></td>
+                @if (String.IsNullOrEmpty(participant.FinishTime))
+                {
+                    <td class="grey">N/A</td>
+                }
+                else
+                {
+                    <td>@participant.FinishTime</td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

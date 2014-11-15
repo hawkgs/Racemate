@@ -7,6 +7,8 @@
 
     public class ParticipantViewModel : IMapFrom<RaceParticipant>, IHaveCustomMappings
     {
+        public int Id { get; set; }
+
         public UserThumbViewModel Participant { get; set; }
 
         public CarViewModel RaceCar { get; set; }

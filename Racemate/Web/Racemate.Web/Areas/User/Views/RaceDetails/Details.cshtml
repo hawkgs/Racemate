@@ -10,7 +10,7 @@
     // They were omitted from the Model in order to avoid unnecessary polution and separate the logic
     bool isRaceValid = !Model.IsFinished && !Model.IsCanceled;
     bool isParticipant = Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name);
-    bool isKicked = Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name && p.IsKicked);
+    bool isKicked = Model.KickedRacers.Any(r => r == this.User.Identity.Name);
     bool isSpectator = Model.Spectators.Any(s => s.Name == this.User.Identity.Name);
     bool isOrganizer = Model.Organizer == this.User.Identity.Name;
     bool isRaceUpcoming = Model.DateTimeOfRace > DateTime.Now;
@@ -25,6 +25,8 @@
     <div class="msg error">You were kicked from the race!</div>
 }
 
+@Html.ValidationSummary(true, String.Empty, new { @class = "msg-list error" })
+
 <h2>
     <span>@ViewBag.Title</span>
 
@@ -34,7 +36,7 @@
         areThereFreePlaces &&
         !isParticipant && !isSpectator && !isKicked)
     {
-        using (Html.BeginForm("Join", "Race", FormMethod.Post, new { @class = "pull-right horizontal" }))
+        using (Html.BeginForm("Join", "RaceDetails", FormMethod.Post, new { @class = "pull-right horizontal" }))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.EncryptedId)
@@ -81,23 +83,27 @@
             {
                 <p>@Model.Description</p>
             }
-            <hr class="space" />
-            <h3>Evaluate the Race</h3>
-            <form>
-                <fieldset>
-                    <div>
-                        <label for="oragnization-pts">Organization Points</label>
-                        <input id="oragnization-pts" type="number" />
-                    </div>
-                    <div>
-                        <label for="safety-pts">Safety Points</label>
-                        <input id="safety-pts" type="number" />
-                    </div>
-                    <div>
-                        <input type="submit" class="green" value="Evaluate" />
-                    </div>
-                </fieldset>
-            </form>
+
+            @if (isRaceOver && (isParticipant || isSpectator))
+            {
+                <hr class="space" />
+                <h3>Evaluate the Race</h3>
+                <form>
+                    <fieldset>
+                        <div>
+                            <label for="oragnization-pts">Organization Points</label>
+                            <input id="oragnization-pts" type="number" />
+                        </div>
+                        <div>
+                            <label for="safety-pts">Safety Points</label>
+                            <input id="safety-pts" type="number" />
+                        </div>
+                        <div>
+                            <input type="submit" class="green" value="Evaluate" />
+                        </div>
+                    </fieldset>
+                </form>
+            }
         </div>
     </section>
     <section class="side pad-right">
@@ -123,38 +129,33 @@
             </div>
             <h4 class="race-title">@Model.DateTimeOfRace</h4>
             <hr />
-            <table class="positions">
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Username</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><a href="#">Pesho</a></td>
-                        <td>3:43</td>
-                    </tr>
-                </tbody>
-            </table>
-            <hr />
-            <div id="evaluation">
-                <div>
-                    <p>2342</p>
-                    <p>Organization</p>
-                </div>
-                <div>
-                    <p>2342</p>
-                    <p>Safety</p>
-                </div>
-                <div>
-                    <p>2342</p>
-                    <p>Entertainment</p>
-                </div>
-            </div>
-            <hr />
+            @if (isRaceOver)
+            {
+                if (Model.Participants.Count > 0)
+                {
+                    @Html.Partial("_FinishPositionsTable", Model.Participants)
+                    <hr />
+                }
+
+                if (Model.Spectators.Count > 0)
+                {
+                    <div id="evaluation">
+                        <div>
+                            <p>2342</p>
+                            <p>Organization</p>
+                        </div>
+                        <div>
+                            <p>2342</p>
+                            <p>Safety</p>
+                        </div>
+                        <div>
+                            <p>2342</p>
+                            <p>Entertainment</p>
+                        </div>
+                    </div>
+                    <hr />
+                }
+            }
             <table class="race-details">
                 <tr>
                     <td><div class="rc-detail location"></div> Location</td>
@@ -192,9 +193,9 @@
         <div class="container pad-top">
             <h4>Other Options</h4>
             <hr class="space" />
-            @if (isRaceValid && isRaceUpcoming && !isParticipant && !isOrganizer && !isSpectator)
+            @if (isRaceValid && isRaceUpcoming && !isParticipant && !isOrganizer && !isSpectator && !isKicked)
             {
-                using (Html.BeginForm("Spectate", "Race", FormMethod.Post))
+                using (Html.BeginForm("Spectate", "RaceDetails", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -204,7 +205,7 @@
             }
             else if (isRaceValid && isRaceInProgress && (isParticipant || isSpectator))
             {
-                using (Html.BeginForm("AlertForPolice", "Race", FormMethod.Post))
+                using (Html.BeginForm("AlertForPolice", "RaceDetails", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -214,7 +215,7 @@
             }
             else if (isRaceValid && isOrganizer && (isRaceUpcoming || isRaceInProgress))
             {
-                using (Html.BeginForm("Kick", "Race", FormMethod.Post))
+                using (Html.BeginForm("Kick", "RaceDetails", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -231,7 +232,7 @@
     <h2>Set Positions</h2>
     <div id="set-positions" class="holder container">
         <div class="msg note">Please, set the finish positions and time for the racers. Be advised that the data must be confirmed from respective racer in order to be taken in count.</div>
-        @using (Html.BeginForm("Positioning", "Race", FormMethod.Post))
+        @using (Html.BeginForm("Positioning", "RaceDetails", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.EncryptedId)
@@ -240,7 +241,7 @@
                 <div class="row">
                     @foreach (var participant in Model.Participants.Where(p => !p.IsKicked))
                     {
-                        @Html.Partial("_PositionEvaluation", participant)
+                        @Html.Partial("EditorTemplates/_PositionEvaluation", participant)
                     }
                 </div>
                 <div class="row">
@@ -273,7 +274,7 @@
             WindowId = "leave",
             Title = "Leave Race",
             Message = String.Format("Are you sure that you want to leave \"{0}\" race?", Model.Name),
-            Controller = "Race",
+            Controller = "RaceDetails",
             Action = "Leave",
             EncryptedId = Model.EncryptedId
         })
@@ -285,7 +286,7 @@
             WindowId = "cancel",
             Title = String.Format("Cancel {0} Race", Model.Name),
             Message = "Are you sure that you want to cancel the race? Note that you can't restart it after that.",
-            Controller = "Race",
+            Controller = "RaceDetails",
             Action = "Cancel",
             EncryptedId = Model.EncryptedId
         })
@@ -297,8 +298,7 @@
             WindowId = "finish",
             Title = String.Format("Finish {0} Race", Model.Name),
             Message = "Do you want to finish (close) the race before its end time expires? Note that you can't restart it after that.",
-            Controller = "Race",
-            
+            Controller = "RaceDetails",
             Action = "Finish",
             EncryptedId = Model.EncryptedId
         })
