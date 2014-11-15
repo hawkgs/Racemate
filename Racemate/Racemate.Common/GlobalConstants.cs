@@ -2,6 +2,7 @@
 {
     public class GlobalConstants
     {
-        public const int PAGE_SIZE = 3;
+        public const int PAGE_SIZE = 5;
+        public const string ADMIN = "Admin";
     }
 }

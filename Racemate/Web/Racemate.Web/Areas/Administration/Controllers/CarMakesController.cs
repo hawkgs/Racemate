@@ -6,16 +6,16 @@
     using Racemate.Data;
     using Racemate.Web.Areas.Administration.Controllers.Common;
 
-    public class ReportsController : AdminBaseController
+    public class CarMakesController : AdminBaseController
     {
-        public ReportsController(IRacemateData data)
+        public CarMakesController(IRacemateData data)
             : base(data)
         {
         }
 
         public ActionResult Index()
         {
-            return this.View();
+            return View();
         }
     }
 }
