@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
     using AutoMapper;
     using Racemate.Data.Models;
@@ -43,15 +44,21 @@
 
         public string Description { get; set; }
 
-        public int SpectatorsCount { get; set; }
-
         public ICollection<ParticipantViewModel> Participants { get; set; }
+
+        public ICollection<SpectatorViewModel> Spectators { get; set; }
+
+        public int PoliceAlerts { get; set; }
 
         // Post Properties >>>
 
         public int UserRaceCarId { get; set; }
 
+        public string KickUserId { get; set; }
+
         public IEnumerable<SelectListItem> UserCarSelect { get; set; }
+
+        public IEnumerable<SelectListItem> KickUserSelect { get; set; }
 
         // <<< Post Properties
 
@@ -62,10 +69,18 @@
                            opts => opts.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.Organizer,
                            opts => opts.MapFrom(src => src.Organizer.UserName))
-                .ForMember(dest => dest.SpectatorsCount,
-                           opts => opts.MapFrom(src => src.Spectators.Count))
+                .ForMember(dest => dest.Spectators,
+                           opts => opts.MapFrom(src => src.Spectators.Where(s => !s.IsDeleted)))
+                .ForMember(dest => dest.Participants,
+                           opts => opts.MapFrom(src => src.Participants.Where(p => !p.IsDeleted)))
                 .ForMember(dest => dest.FreeRacePositions,
-                           opts => opts.MapFrom(src => src.AvailableRacePositions - src.Participants.Count));
+                           opts => opts.MapFrom(src => 
+                                   src.AvailableRacePositions - src.Participants
+                                   .Where(p => !p.IsKicked && !p.IsDeleted).Count()))
+                .ForMember(dest => dest.PoliceAlerts,
+                           opts => opts.MapFrom(src => 
+                                   src.Participants.Where(p => p.IsPoliceAlerted).Count() +
+                                   src.Spectators.Where(p => p.IsPoliceAlerted).Count()));
         }
     }
 }

@@ -11,6 +11,12 @@
 
         public CarViewModel RaceCar { get; set; }
 
+        public bool IsKicked { get; set; }
+
+        public int FinishPosition { get; set; }
+
+        public string FinishTime { get; set; }
+
         public void CreateMappings(AutoMapper.IConfiguration configuration)
         {
             configuration.CreateMap<RaceParticipant, ParticipantViewModel>()

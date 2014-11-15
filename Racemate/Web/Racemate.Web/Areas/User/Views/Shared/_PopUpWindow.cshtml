@@ -1,0 +1,23 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Shared.PopUpWindowViewModel
+
+<div class="pop-up-window" data-wid="@Model.WindowId">
+    <div class="window">
+        <div class="title-bar">
+            <span>@Model.Title</span>
+            <div class="close cl-action">&#10060;</div>
+        </div>
+        <div class="content">
+            <p>@Model.Message</p>
+            <div class="keep-float">
+                @using (Html.BeginForm(Model.Action, Model.Controller, FormMethod.Post, new { @class = "pull-left" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.EncryptedId)
+
+                    <input type="submit" class="green" value="Yes, I do" />
+                }
+                <button class="orange cl-action pull-left">No, I don't</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -709,6 +709,7 @@ h4 {
     position: relative;
     background: #2a2e30;
     min-width: 250px;
+    max-width: 400px;
     float: left;
     box-shadow: 0 3px 10px 0 #000;
 }

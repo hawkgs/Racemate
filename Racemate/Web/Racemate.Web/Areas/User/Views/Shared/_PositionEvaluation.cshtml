@@ -1,0 +1,10 @@
+﻿@model Racemate.Web.Areas.User.ViewModels.Race.ParticipantViewModel
+
+<div class="col">
+    //@using (Html.BeginCollectionItem("gifts"))
+    {
+        <p class="title">@Model.Participant.UserName</p>
+        @Html.EditorFor(m => m.FinishPosition, new { placeholder = "Postion" }) <br />
+        @Html.EditorFor(m => m.FinishTime, new { placeholder = "Time (MM:SS)" })
+    }
+</div>

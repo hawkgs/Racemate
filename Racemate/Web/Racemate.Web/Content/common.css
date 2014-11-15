@@ -60,6 +60,10 @@ a.neutral {
     position: relative;
 }
 
+.keep-float {
+    overflow: hidden;
+}
+
 .pull-left {
     float: left;
 }
@@ -68,11 +72,15 @@ a.neutral {
     float: right;
 }
 
+.pad-top {
+    margin-top: 25px;
+}
+
 .thin {
     font-weight: 300;
 }
 
-span.grey {
+.grey {
     color: #798991;
 }
 

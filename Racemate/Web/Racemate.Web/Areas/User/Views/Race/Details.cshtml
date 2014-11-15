@@ -1,32 +1,60 @@
 ﻿@using Racemate.Web.Helpers.Html
+@using Racemate.Web.Areas.User.ViewModels.Shared
 
 @model Racemate.Web.Areas.User.ViewModels.Race.RaceDetailsViewModel
 @{
     ViewBag.Title = Model.Name;
+    
+    // ATTENTION
+    // Those bool variables have ONLY visual and representing purposes
+    // They were omitted from the Model in order to avoid unnecessary polution and separate the logic
+    bool isRaceValid = !Model.IsFinished && !Model.IsCanceled;
+    bool isParticipant = Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name);
+    bool isKicked = Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name && p.IsKicked);
+    bool isSpectator = Model.Spectators.Any(s => s.Name == this.User.Identity.Name);
+    bool isOrganizer = Model.Organizer == this.User.Identity.Name;
+    bool isRaceUpcoming = Model.DateTimeOfRace > DateTime.Now;
+    bool isRaceInProgress = Model.DateTimeOfRace < DateTime.Now && DateTime.Now < Model.DateTimeOfRace.AddHours(Model.Duration);
+    bool isRaceOver = DateTime.Now > Model.DateTimeOfRace.AddHours(Model.Duration);
+    bool doesUserHaveSuitableCar = Model.UserCarSelect.Count() > 0;
+    bool areThereFreePlaces = Model.FreeRacePositions > 0;
+}
+
+@if (isKicked)
+{
+    <div class="msg error">You were kicked from the race!</div>
 }
 
 <h2>
     <span>@ViewBag.Title</span>
 
-    @if (!Model.IsFinished && 
-        !Model.IsCanceled && 
-        Model.DateTimeOfRace > DateTime.Now &&
-        this.User.Identity.Name != Model.Organizer &&
-        Model.UserCarSelect.Count() > 0)
+    @if (isRaceValid && 
+        isRaceUpcoming &&
+        doesUserHaveSuitableCar &&
+        areThereFreePlaces &&
+        !isParticipant && !isSpectator && !isKicked)
     {
         using (Html.BeginForm("Join", "Race", FormMethod.Post, new { @class = "pull-right horizontal" }))
         {
-                @Html.AntiForgeryToken()
-                @Html.HiddenFor(m => m.EncryptedId)
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.EncryptedId)
         
-                @Html.DropDownListFor(m => m.UserRaceCarId, Model.UserCarSelect, new { @class = "dark" })
-                <input type="submit" class="green" value="JOIN RACE" />
+            @Html.DropDownListFor(m => m.UserRaceCarId, Model.UserCarSelect, new { @class = "dark" })
+            <input type="submit" class="green" value="JOIN RACE" />
         }
     }
     
-    @if (Model.Participants.Any(p => p.Participant.UserName == this.User.Identity.Name))
+    @if (isRaceValid && isParticipant && isRaceUpcoming && !isKicked)
     {
         <button class="pop-up-btn orange pull-right" data-window="leave">LEAVE</button>
+    }
+    @if (isRaceValid && isOrganizer && isRaceUpcoming)
+    {
+        <button class="pop-up-btn orange pull-right" data-window="cancel">CANCEL RACE</button>
+    }
+    else if (isRaceValid && isOrganizer && isRaceInProgress)
+    {
+        <button class="pop-up-btn green pull-right" data-window="finish">FINISH RACE</button>
     }
 </h2>
 
@@ -74,7 +102,10 @@
     </section>
     <section class="side pad-right">
         <div class="container">
-            <div class="msg error">4 police alerts</div>
+            @if (Model.PoliceAlerts > 0 && (isParticipant || isOrganizer || isSpectator))
+            {
+                <div class="msg error">@Model.PoliceAlerts police alert(s)</div>
+            }
             <div id="race-countdown">--:--:--</div>
             @if (Model.DateTimeOfRace > DateTime.Now)
             {
@@ -103,26 +134,6 @@
                 <tbody>
                     <tr>
                         <td>1</td>
-                        <td><a href="#">Pesho</a></td>
-                        <td>3:43</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><a href="#">Pesho</a></td>
-                        <td>3:43</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><a href="#">Pesho</a></td>
-                        <td>3:43</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td><a href="#">Pesho</a></td>
-                        <td>3:43</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
                         <td><a href="#">Pesho</a></td>
                         <td>3:43</td>
                     </tr>
@@ -174,45 +185,71 @@
                 </tr>
                 <tr>
                     <td><div class="rc-detail spectators"></div> Spectators</td>
-                    <td>@Model.SpectatorsCount</td>
+                    <td>@Model.Spectators.Count</td>
                 </tr>
             </table>
         </div>
+        <div class="container pad-top">
+            <h4>Other Options</h4>
+            <hr class="space" />
+            @if (isRaceValid && isRaceUpcoming && !isParticipant && !isOrganizer && !isSpectator)
+            {
+                using (Html.BeginForm("Spectate", "Race", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.EncryptedId)
+
+                    <input type="submit" class="green" value="Spectate" />
+                }
+            }
+            else if (isRaceValid && isRaceInProgress && (isParticipant || isSpectator))
+            {
+                using (Html.BeginForm("AlertForPolice", "Race", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.EncryptedId)
+
+                    <input type="submit" class="orange" value="Alert For Police" />
+                }
+            }
+            else if (isRaceValid && isOrganizer && (isRaceUpcoming || isRaceInProgress))
+            {
+                using (Html.BeginForm("Kick", "Race", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.EncryptedId)
+                    
+                    @Html.DropDownListFor(m => m.KickUserId, Model.KickUserSelect, "-- select user --")
+                    <input type="submit" class="orange" value="Kick" />
+                }
+            }
+        </div>
     </section>
 </div>
-<h2>Set Positions</h2>
-<div id="set-positions" class="holder container">
-    <div class="msg note">Please, set the finish positions and time for the racers. Be advised that the data must be confirmed from respective racer in order to be taken in count.</div>
-    <form>
-        <fieldset>
-            <div class="row">
-                <div class="col">
-                    <p class="title">peshoWrxa</p>
-                    <input type="number" placeholder="Position" /><br />
-                    <input type="text" placeholder="Time (MM:SS)" />
+@if (isRaceValid && isOrganizer && isRaceOver)
+{
+    <h2>Set Positions</h2>
+    <div id="set-positions" class="holder container">
+        <div class="msg note">Please, set the finish positions and time for the racers. Be advised that the data must be confirmed from respective racer in order to be taken in count.</div>
+        @using (Html.BeginForm("Positioning", "Race", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.EncryptedId)
+            
+            <fieldset>
+                <div class="row">
+                    @foreach (var participant in Model.Participants.Where(p => !p.IsKicked))
+                    {
+                        @Html.Partial("_PositionEvaluation", participant)
+                    }
                 </div>
-                <div class="col">
-                    <p class="title">peshoWrxa</p>
-                    <input type="number" placeholder="Position" /><br />
-                    <input type="text" placeholder="Time (MM:SS)" />
+                <div class="row">
+                    <input type="submit" class="green" value="Set Positions" />
                 </div>
-                <div class="col">
-                    <p class="title">peshoWrxa</p>
-                    <input type="number" placeholder="Position" /><br />
-                    <input type="text" placeholder="Time (MM:SS)" />
-                </div>
-                <div class="col">
-                    <p class="title">peshoWrxa</p>
-                    <input type="number" placeholder="Position" /><br />
-                    <input type="text" placeholder="Time (MM:SS)" />
-                </div>
-            </div>
-            <div class="row">
-                <input type="submit" class="green" value="Set Positions" />
-            </div>
-        </fieldset>
-    </form>
-</div>
+            </fieldset>
+        }
+    </div>
+}
 @if (Model.Participants.Count > 0)
 {
     <h2>Racers</h2>
@@ -229,21 +266,43 @@
     </div>
 }
 <div id="pop-ups">
-    <div class="pop-up-window" data-wid="leave">
-        <div class="window">
-            <div class="title-bar">
-                <span>Leave Race</span>
-                <div class="close cl-action">&#10060;</div>
-            </div>
-            <div class="content">
-                <p>Are you sure you want to leave "@Model.Name" race?</p>
-                <div>
-                    <button class="green">Yes, I do</button>
-                    <button class="orange cl-action">No, I don't</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @if (isRaceValid && isParticipant && isRaceUpcoming)
+    {
+        @Html.Partial("_PopUpWindow", new PopUpWindowViewModel 
+        { 
+            WindowId = "leave",
+            Title = "Leave Race",
+            Message = String.Format("Are you sure that you want to leave \"{0}\" race?", Model.Name),
+            Controller = "Race",
+            Action = "Leave",
+            EncryptedId = Model.EncryptedId
+        })
+    }
+    @if (isRaceValid && isOrganizer && isRaceUpcoming)
+    {
+        @Html.Partial("_PopUpWindow", new PopUpWindowViewModel
+        {
+            WindowId = "cancel",
+            Title = String.Format("Cancel {0} Race", Model.Name),
+            Message = "Are you sure that you want to cancel the race? Note that you can't restart it after that.",
+            Controller = "Race",
+            Action = "Cancel",
+            EncryptedId = Model.EncryptedId
+        })
+    }
+    else if (isRaceValid && isOrganizer && isRaceInProgress)
+    {
+        @Html.Partial("_PopUpWindow", new PopUpWindowViewModel
+        {
+            WindowId = "finish",
+            Title = String.Format("Finish {0} Race", Model.Name),
+            Message = "Do you want to finish (close) the race before its end time expires? Note that you can't restart it after that.",
+            Controller = "Race",
+            
+            Action = "Finish",
+            EncryptedId = Model.EncryptedId
+        })
+    }
 </div>
 
 @section styles {

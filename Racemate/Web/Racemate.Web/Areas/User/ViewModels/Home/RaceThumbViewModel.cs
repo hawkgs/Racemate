@@ -1,6 +1,7 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Home
 {
     using System;
+    using System.Linq;
     using AutoMapper;
     using Racemate.Data.Models;
     using Racemate.Web.Infrastructure.Mapping;
@@ -21,9 +22,11 @@
         {
             configuration.CreateMap<Race, RaceThumbViewModel>()
                 .ForMember(dest => dest.Type,
-                            opts => opts.MapFrom(src => src.Type.Name))
+                           opts => opts.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.FreeRacePositions,
-                            opts => opts.MapFrom(src => src.AvailableRacePositions - src.Participants.Count));
+                           opts => opts.MapFrom(src =>
+                                   src.AvailableRacePositions - src.Participants
+                                   .Where(p => !p.IsKicked && !p.IsDeleted).Count()));
         }
     }
 }

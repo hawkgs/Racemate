@@ -43,10 +43,8 @@
 
         public ActionResult Details(string id)
         {
-            string decryptedId = QueryStringBuilder.DecryptRaceId(id);
             int raceId;
-
-            if (!int.TryParse(decryptedId, out raceId))
+            if (!this.IsRaceIdValid(id, out raceId))
             {
                 return this.RedirectToAction("List");
             }
@@ -62,6 +60,19 @@
                     Text = String.Format("{0} {1}", c.Model.CarMake.Name, c.Model.Name)
                 });
 
+            if (race.OrganizerId == this.CurrentUser.Id)
+            {
+                var kickUserSelect = race.Participants
+                    .Where(p => !p.IsKicked && !p.IsDeleted && p.UserId != this.CurrentUser.Id)
+                    .Select(p => new SelectListItem()
+                    {
+                        Value = p.UserId.ToString(),
+                        Text = p.User.UserName
+                    });
+
+                model.KickUserSelect = kickUserSelect;
+            }
+
             model.EncryptedId = id;
             model.UserCarSelect = userVehicles;
 
@@ -72,10 +83,8 @@
         [ValidateAntiForgeryToken]
         public ActionResult Join(RaceDetailsViewModel model)
         {
-            string decryptedId = QueryStringBuilder.DecryptRaceId(model.EncryptedId);
             int raceId;
-
-            if (!int.TryParse(decryptedId, out raceId))
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
             {
                 return this.RedirectToAction("List");
             }
@@ -104,6 +113,175 @@
             this.data.SaveChanges();
 
             return this.RedirectToAction("List");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Spectate(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var race = this.data.Races.GetById(raceId);
+
+            var spectator = new RaceSpectator();
+            spectator.User = this.CurrentUser;
+            race.Spectators.Add(spectator);
+
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Cancel(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var race = this.data.Races.GetById(raceId);
+
+            if (race.OrganizerId != this.CurrentUser.Id)
+            {
+                // not an organizer
+            }
+
+            if (DateTime.Now > race.DateTimeOfRace)
+            {
+                // race has already started
+            }
+
+            race.IsCanceled = true;
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Finish(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var race = this.data.Races.GetById(raceId);
+
+            if (race.OrganizerId != this.CurrentUser.Id)
+            {
+                // not an organizer
+            }
+
+            if (DateTime.Now > race.DateTimeOfRace.AddHours(race.Duration))
+            {
+                // race has already finished
+            }
+
+            race.IsFinished = true;
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Leave(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            int participantId = this.data.Races.GetById(raceId).Participants
+                .FirstOrDefault(p => p.UserId == this.CurrentUser.Id && !p.IsDeleted && !p.IsKicked).Id;
+
+            this.data.RaceParticipants.Delete(participantId);
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Kick(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var participant = this.data.Races.GetById(raceId).Participants
+                .FirstOrDefault(p => 
+                    p.UserId == model.KickUserId &&
+                    p.UserId != this.CurrentUser.Id && 
+                    !p.IsDeleted &&
+                    !p.IsKicked);
+
+            if (participant == null)
+            {
+                // no such user error
+            }
+
+            participant.IsKicked = true;
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Positioning(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            return this.RedirectToAction("List");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AlertForPolice(RaceDetailsViewModel model)
+        {
+            int raceId;
+            if (!this.IsRaceIdValid(model.EncryptedId, out raceId))
+            {
+                return this.RedirectToAction("List");
+            }
+
+            var race = this.data.Races.GetById(raceId);
+
+            var participant = race.Participants
+                .FirstOrDefault(s => s.UserId == this.CurrentUser.Id);
+
+            if (participant != null)
+            {
+                participant.IsPoliceAlerted = true;
+            }
+            else
+            {
+                var spectator = race.Spectators
+                    .FirstOrDefault(s => s.UserId == this.CurrentUser.Id);
+
+                spectator.IsPoliceAlerted = true;
+            }
+
+            this.data.SaveChanges();
+
+            return this.RedirectToAction("Details", new { id = model.EncryptedId });
         }
 
         public JsonResult RaceRoute(string id)
@@ -220,5 +398,16 @@
                 Order = order
             });
         }
+
+        #region Helpers
+
+        private bool IsRaceIdValid(string encryptedId, out int raceId)
+        {
+            string decryptedId = QueryStringBuilder.DecryptRaceId(encryptedId);
+
+            return int.TryParse(decryptedId, out raceId);
+        }
+
+        #endregion
     }
 }

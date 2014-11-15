@@ -143,6 +143,7 @@
 
         private IEnumerable<SelectListItem> BuildRaceTypeMultiSelect()
         {
+
             var raceTypes = this.data.RaceTypes.All();
             var raceTypesList = new List<SelectListItem>();
 
@@ -158,13 +159,15 @@
             return raceTypesList;
         }
 
-        private IQueryable<RaceType> GetRaceTypes()
+        private IEnumerable<RaceType> GetRaceTypes()
         {
+            return this.data.RaceTypes.All().ToList();
+
             const int CACHE_HR = 24;
 
             if (this.HttpContext.Cache["raceTypes"] == null)
             {
-                var raceTypes = this.data.RaceTypes.All();
+                var raceTypes = this.data.RaceTypes.All().ToList();
 
                 this.HttpContext.Cache.Insert(
                 "raceTypes",
@@ -176,16 +179,18 @@
                 this.OnCacheItemRemovedCallback);
             }
 
-            return (IQueryable<RaceType>)this.HttpContext.Cache["raceTypes"];
+            return (IEnumerable<RaceType>)this.HttpContext.Cache["raceTypes"];
         }
 
-        private IQueryable<CarMake> GetCarMakes()
+        private IEnumerable<CarMake> GetCarMakes()
         {
+            return this.data.CarMakes.All().ToList();
+
             const int CACHE_MIN = 30;
 
             if (this.HttpContext.Cache["carMakes"] == null)
             {
-                var carMakes = this.data.CarMakes.All();
+                var carMakes = this.data.CarMakes.All().ToList();
 
                 this.HttpContext.Cache.Insert(
                 "carMakes",
@@ -197,7 +202,7 @@
                 this.OnCacheItemRemovedCallback);
             }
 
-            return (IQueryable<CarMake>)this.HttpContext.Cache["carMakes"];
+            return (IEnumerable<CarMake>)this.HttpContext.Cache["carMakes"];
         }
 
         private void OnCacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
