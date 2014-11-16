@@ -2,23 +2,27 @@
 @using Microsoft.AspNet.Identity
 @{
     Layout = "~/Views/Shared/_MasterLayout.cshtml";
+
+    object AdminArea = new { Area = GlobalConstants.ADMIN_AREA };
+    object UserArea = new { Area = GlobalConstants.USER_AREA };
+    object GlobalArea = new { Area = String.Empty };
 }
 
 <header id="main-header">
     <div id="header-content">
-        <a href="@Url.Action("Index", "Home", new { Area = "User" })" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
+        <a href="@Url.Action("Index", "Home", UserArea)" class="logo neutral"><img src="~/Images/logo.png" width="201" height="37" alt="RACEMATE" /></a>
         <div id="authenticated" class="pull-right relative">
             <nav id="menu">
-                <a href="@Url.Action("Create", "Race", new { Area = "User" })"
+                <a href="@Url.Action("Create", "Race", UserArea)"
                    class="nav-item create-race"
                    title="Create Race">
                     <span>New Race</span>
                 </a>
-                <a href="@Url.Action("List", "Race", new { Area = "User" })" title="Races" class="nav-item races"></a>
+                <a href="@Url.Action("List", "Race", UserArea)" title="Races" class="nav-item races"></a>
                 <div class="nav-item members" title="Members"></div>
                 @if(User.IsInRole(GlobalConstants.ADMIN))
                 {
-                    <a href="@Url.Action("Index", "Reports", new { Area = "Administration" })" title="Reports" class="nav-item reports"></a>
+                    <a href="@Url.Action("Index", "Reports", AdminArea)" title="Reports" class="nav-item reports"></a>
                 }
                 <div class="nav-item notifications" title="Notifications">
                     <div class="indicator">4</div>
@@ -48,13 +52,14 @@
                         <li><a href="#">My Profile</a></li>
                         @if (this.User.IsInRole(GlobalConstants.ADMIN))
                         {
-                            <li>@Html.ActionLink("Car Makes", "Index", "CarMakes", new { Area = "Administration" }, new { })</li>
+                            <li>@Html.ActionLink("Car Makes", "Index", "CarMakes", AdminArea, new { })</li>
+                            <li>@Html.ActionLink("Car Models", "Index", "CarModels", AdminArea, new { })</li>
                         }
-                        <li>@Html.ActionLink("My Races", "MyRaces", "Race", new { Area = "User" }, new { })</li>
-                        <li>@Html.ActionLink("Garage", "Index", "Garage", new { Area = "User" }, new { })</li>
-                        <li>@Html.ActionLink("Invitations", "Index", "Invitations", new { Area = "User" }, new { })</li>
+                        <li>@Html.ActionLink("My Races", "MyRaces", "Race", UserArea, new { })</li>
+                        <li>@Html.ActionLink("Garage", "Index", "Garage", UserArea, new { })</li>
+                        <li>@Html.ActionLink("Invitations", "Index", "Invitations", UserArea, new { })</li>
                         <li>
-                            @using (Html.BeginForm("LogOff", "Account", new { Area = string.Empty }, FormMethod.Post, new { id = "logoutForm" }))
+                            @using (Html.BeginForm("LogOff", "Account", GlobalArea, FormMethod.Post, new { id = "logoutForm" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a>

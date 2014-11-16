@@ -1,0 +1,66 @@
+﻿@using Racemate.Web.Areas.Administration.ViewModels.CarModels;
+@{
+    ViewBag.Title = "Manage Car Models";
+
+    const string Controller = "CarModels";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@*@(Html.Kendo().ComboBox()
+    .Name("Result")
+    .DataValueField("Text")
+    .DataTextField("Text")
+    .HighlightFirst(true)
+    .BindTo((IEnumerable<SelectListItem>)ViewBag.Makes)
+)*@
+
+@(Html.Kendo()
+    .Grid<CarModelViewModel>()
+    .Name("CarMakesGrid")
+    .Columns(col =>
+    {
+        col.Bound(pr => pr.Id);
+        col.Bound(pr => pr.Name);
+        col.Bound(pr => pr.Makes);//.ClientTemplate("#= String #");
+        //col.Bound("Result");
+        col.Command(com => com.Edit()).Title("Edit");
+        //col.Command(com => com.Destroy()).Title("Delete");
+    })
+    .Pageable(page => page.Refresh(true))
+    .Sortable()
+    .Groupable()
+    .Editable(edit =>
+    {
+        edit.Mode(GridEditMode.PopUp);
+    })
+    .Filterable()
+    .ToolBar(toolbar =>
+    {
+        toolbar.Create();
+    })
+    .DataSource(data =>
+        data
+        .Ajax()
+        .Model(m => 
+        {
+            m.Id(model => model.Id);
+            m.Field(model => model.Makes);
+        })
+        .Read(read => read.Action("Read", Controller))
+        .Create(create => create.Action("Create", Controller))
+        .Update(update => update.Action("Update", Controller))
+        .Destroy(destroy => destroy.Action("Destroy", Controller))
+        )
+)
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/kendo")
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/kendo")
+}

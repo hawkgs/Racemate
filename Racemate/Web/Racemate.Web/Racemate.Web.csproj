@@ -202,11 +202,13 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\ViewEngineConfig.cs" />
     <Compile Include="Areas\Administration\AdministrationAreaRegistration.cs" />
+    <Compile Include="Areas\Administration\Controllers\CarModelsController.cs" />
     <Compile Include="Areas\Administration\Controllers\CarMakesController.cs" />
     <Compile Include="Areas\Administration\Controllers\Common\AdminBaseController.cs" />
     <Compile Include="Areas\Administration\Controllers\Common\KendoGridAdministrationController.cs" />
     <Compile Include="Areas\Administration\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Administration\ViewModels\CarMakes\CarMakeViewModel.cs" />
+    <Compile Include="Areas\Administration\ViewModels\CarModels\CarModelViewModel.cs" />
     <Compile Include="Areas\User\Controllers\GarageController.cs" />
     <Compile Include="Areas\User\Controllers\HomeController.cs" />
     <Compile Include="Areas\User\Controllers\InvitationsController.cs" />
@@ -234,6 +236,7 @@
     <Compile Include="Areas\User\ViewModels\Shared\PopUpWindowViewModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Common\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -621,6 +624,7 @@
     <Content Include="Areas\Administration\Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Areas\Administration\Views\Shared\EditorTemplates\Time.cshtml" />
     <Content Include="Areas\Administration\Views\Shared\EditorTemplates\Url.cshtml" />
+    <Content Include="Areas\Administration\Views\CarModels\Index.cshtml" />
     <None Include="Scripts\libs\jquery-2.1.1.intellisense.js" />
     <Content Include="Images\footer_logo.png" />
     <Content Include="Images\home_bg.jpg" />

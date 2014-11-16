@@ -1,7 +1,9 @@
 ﻿@using Racemate.Web.Areas.Administration.ViewModels.CarMakes;
 @model IEnumerable<CarMakeViewModel>
 @{
-    ViewBag.Title = "Car Makes";
+    ViewBag.Title = "Manage Car Makes";
+
+    const string Controller = "CarMakes"; 
 }
 
 <h2>@ViewBag.Title</h2>
@@ -14,7 +16,7 @@
         col.Bound(pr => pr.Id);
         col.Bound(pr => pr.Name);
         col.Command(com => com.Edit()).Title("Edit");
-        col.Command(com => com.Destroy()).Title("Delete");
+        //col.Command(com => com.Destroy()).Title("Delete");
     })
     .Pageable(page => page.Refresh(true))
     .Sortable()
@@ -32,10 +34,10 @@
         data
         .Ajax()
         .Model(m => m.Id(make => make.Id))
-        .Read(read => read.Action("Read", "CarMakes"))
-        .Create(create => create.Action("Create", "CarMakes"))
-        .Update(update => update.Action("Update", "CarMakes"))
-        .Destroy(destroy => destroy.Action("Destroy", "CarMakes"))
+                .Read(read => read.Action("Read", Controller))
+                .Create(create => create.Action("Create", Controller))
+                .Update(update => update.Action("Update", Controller))
+                .Destroy(destroy => destroy.Action("Destroy", Controller))
         )
 )
 
