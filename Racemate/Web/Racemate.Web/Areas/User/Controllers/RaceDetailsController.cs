@@ -153,14 +153,18 @@
 
             var race = this.data.Races.GetById(raceId);
 
+            // TODO: Join validation
+
             if (race.OrganizerId != this.User.Identity.GetUserId())
             {
-                // not an organizer
+                this.Validator.NotAnOrganizerError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             if (DateTime.Now > race.DateTimeOfRace)
             {
-                // race has already started
+                this.Validator.RaceHasStartedError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             race.IsCanceled = true;
@@ -180,14 +184,18 @@
 
             var race = this.data.Races.GetById(raceId);
 
+            // TODO: Join validation
+
             if (race.OrganizerId != this.User.Identity.GetUserId())
             {
-                // not an organizer
+                this.Validator.NotAnOrganizerError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             if (DateTime.Now > race.DateTimeOfRace.AddHours(race.Duration))
             {
-                // race has already finished
+                this.Validator.RaceHasFinishedError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             race.IsFinished = true;
@@ -209,7 +217,8 @@
 
             if (DateTime.Now > race.DateTimeOfRace)
             {
-                // race has already started
+                this.Validator.RaceHasStartedError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             int participantId = race.Participants
@@ -234,19 +243,20 @@
 
             if (DateTime.Now > race.DateTimeOfRace.AddHours(race.Duration))
             {
-                // race has already finished
+                this.Validator.RaceHasFinishedError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             var participant = race.Participants
                 .FirstOrDefault(p => 
                     p.UserId == model.KickUserId &&
                     p.UserId != this.User.Identity.GetUserId() && 
-                    !p.IsDeleted &&
-                    !p.IsKicked);
+                    !p.IsDeleted && !p.IsKicked);
 
             if (participant == null)
             {
-                // no such user error
+                this.Validator.UserNotFoundError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             participant.IsKicked = true;
@@ -264,7 +274,11 @@
                 return this.RedirectToList();
             }
 
-            // validation
+            if (!this.ModelState.IsValid)
+            {
+                this.TempData["ViewData"] = this.ViewData;
+                return this.RedirectToRace(model.EncryptedId);
+            }
 
             var participants = this.data.Races.GetById(raceId).Participants
                 .Where(p => !p.IsDeleted && !p.IsKicked);
@@ -302,7 +316,8 @@
 
             if (DateTime.Now > race.DateTimeOfRace.AddHours(race.Duration))
             {
-                // race has already finished
+                this.Validator.RaceHasFinishedError();
+                return this.RedirectToRace(model.EncryptedId);
             }
 
             var participant = race.Participants

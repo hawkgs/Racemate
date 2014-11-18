@@ -33,9 +33,27 @@
             this.TempData["ViewData"] = this.ViewData;
         }
 
+        public void RaceHasFinishedError()
+        {
+            this.ModelState.AddModelError(string.Empty, "The race has already finished!");
+            this.TempData["ViewData"] = this.ViewData;
+        }
+
         public void NoAvailableRacePositionsError()
         {
             this.ModelState.AddModelError(string.Empty, "All race positions has been already taken!");
+            this.TempData["ViewData"] = this.ViewData;
+        }
+
+        public void NotAnOrganizerError()
+        {
+            this.ModelState.AddModelError(string.Empty, "You are not an organizer!");
+            this.TempData["ViewData"] = this.ViewData;
+        }
+
+        public void UserNotFoundError()
+        {
+            this.ModelState.AddModelError(string.Empty, "There isn't such user!");
             this.TempData["ViewData"] = this.ViewData;
         }
     }
