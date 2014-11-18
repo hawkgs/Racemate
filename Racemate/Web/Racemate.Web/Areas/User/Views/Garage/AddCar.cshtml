@@ -1,13 +1,15 @@
 ﻿@model Racemate.Web.Areas.User.ViewModels.Garage.AddCarViewModel
 @{
     ViewBag.Title = "Add New Car";
+
+    const string Controller = "Garage";
 }
 
 <h2>Garage</h2>
 <div class="holder">
     <section class="side container add-car-side"></section>
     <section class="content container relative">
-        @using (Html.BeginForm("AddCar", "Garage", FormMethod.Post))
+        @using (Html.BeginForm("AddCar", Controller, FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             

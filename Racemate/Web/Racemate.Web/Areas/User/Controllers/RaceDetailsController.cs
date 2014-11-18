@@ -6,6 +6,8 @@
 
     using AutoMapper;
 
+    using Microsoft.AspNet.Identity;
+
     using Racemate.Common;
     using Racemate.Data;
     using Racemate.Data.Models;
@@ -48,10 +50,10 @@
                     Text = String.Format("{0} {1}", c.Model.CarMake.Name, c.Model.Name)
                 });
 
-            if (race.OrganizerId == this.CurrentUser.Id)
+            if (race.OrganizerId == this.User.Identity.GetUserId())
             {
                 var kickUserSelect = race.Participants
-                    .Where(p => !p.IsKicked && !p.IsDeleted && p.UserId != this.CurrentUser.Id)
+                    .Where(p => !p.IsKicked && !p.IsDeleted && p.UserId != this.User.Identity.GetUserId())
                     .Select(p => new SelectListItem()
                     {
                         Value = p.UserId.ToString(),
@@ -151,7 +153,7 @@
 
             var race = this.data.Races.GetById(raceId);
 
-            if (race.OrganizerId != this.CurrentUser.Id)
+            if (race.OrganizerId != this.User.Identity.GetUserId())
             {
                 // not an organizer
             }
@@ -178,7 +180,7 @@
 
             var race = this.data.Races.GetById(raceId);
 
-            if (race.OrganizerId != this.CurrentUser.Id)
+            if (race.OrganizerId != this.User.Identity.GetUserId())
             {
                 // not an organizer
             }
@@ -211,7 +213,7 @@
             }
 
             int participantId = race.Participants
-                .FirstOrDefault(p => p.UserId == this.CurrentUser.Id && !p.IsDeleted && !p.IsKicked).Id;
+                .FirstOrDefault(p => p.UserId == this.User.Identity.GetUserId() && !p.IsDeleted && !p.IsKicked).Id;
 
             this.data.RaceParticipants.Delete(participantId);
 
@@ -238,7 +240,7 @@
             var participant = race.Participants
                 .FirstOrDefault(p => 
                     p.UserId == model.KickUserId &&
-                    p.UserId != this.CurrentUser.Id && 
+                    p.UserId != this.User.Identity.GetUserId() && 
                     !p.IsDeleted &&
                     !p.IsKicked);
 
@@ -304,7 +306,7 @@
             }
 
             var participant = race.Participants
-                .FirstOrDefault(s => s.UserId == this.CurrentUser.Id);
+                .FirstOrDefault(s => s.UserId == this.User.Identity.GetUserId());
 
             if (participant != null)
             {
@@ -313,7 +315,7 @@
             else
             {
                 var spectator = race.Spectators
-                    .FirstOrDefault(s => s.UserId == this.CurrentUser.Id);
+                    .FirstOrDefault(s => s.UserId == this.User.Identity.GetUserId());
 
                 spectator.IsPoliceAlerted = true;
             }

@@ -1,6 +1,8 @@
 ﻿@model Racemate.Web.Areas.User.ViewModels.Race.RaceListViewModel
 @{
     ViewBag.Title = "My Races";
+
+    const string Controller = "Race";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -15,7 +17,7 @@
             selectedClass = "current-page";
         }
 
-        @Html.ActionLink(page.ToString(), "MyRaces", "Race", new { page = page, sortBy = Model.SortBy, order = Model.Order }, new { @class = selectedClass })
+        @Html.ActionLink(page.ToString(), "MyRaces", Controller, new { page = page, sortBy = Model.SortBy, order = Model.Order }, new { @class = selectedClass })
     }
 </div>
 

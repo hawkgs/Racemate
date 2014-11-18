@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web.Mvc;
     using System.Web.Caching;
+    using System.Web.Mvc;
 
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
+
+    using Microsoft.AspNet.Identity;
 
     using Racemate.Data;
     using Racemate.Data.Models;
@@ -27,7 +29,7 @@
         public ActionResult Index()
         {
             var cars = this.data.Cars.All()
-                .Where(c => c.OwnerId == this.CurrentUser.Id)
+                .Where(c => c.OwnerId == this.User.Identity.GetUserId())
                 .Project().To<CarViewModel>();
 
             return this.View(cars);

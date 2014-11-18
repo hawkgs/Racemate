@@ -7,6 +7,8 @@
 
     public static class RaceHelpersExtensions
     {
+        private const string RaceController = "Race";
+
         public static MvcHtmlString StripRaceAddress(this HtmlHelper helper, string address)
         {
             const int MAX_ADDRESS_LEN = 17;
@@ -23,7 +25,7 @@
         {
             string encryptedId = QueryStringBuilder.EncryptRaceId(id, name);
 
-            return LinkExtensions.ActionLink(helper, name, "Details", "Race", new { Id = encryptedId }, new { @class = "title" });
+            return LinkExtensions.ActionLink(helper, name, "Details", RaceController, new { Id = encryptedId }, new { @class = "title" });
         }
 
         public static MvcHtmlString RaceTypeImage(this HtmlHelper helper, string typeName)

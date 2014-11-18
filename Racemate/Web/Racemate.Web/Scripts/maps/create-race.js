@@ -68,10 +68,12 @@
                 window.location = SUCC_REDRCT_ROUTE;
             },
             error: function (response) {
-                var $errorContainer = $("#error-container");
+                var $errorContainer = $("#error-container"),
+                    errors = JSON.parse(response.responseText);
+
                 $errorContainer.show();
 
-                response.responseJSON.forEach(function (msg) {
+                errors.forEach(function (msg) {
                     var message = $("<div>")
                         .addClass("msg")
                         .addClass("error")

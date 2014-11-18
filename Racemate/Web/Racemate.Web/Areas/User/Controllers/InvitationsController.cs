@@ -8,11 +8,13 @@
 
     using Generators;
 
+    using Microsoft.AspNet.Identity;
+
+    using Racemate.Common;
     using Racemate.Data;
     using Racemate.Data.Models;
     using Racemate.Web.Areas.User.ViewModels.Invitations;
     using Racemate.Web.Controllers.Common;
-    using Racemate.Common;
 
     [Authorize]
     public class InvitationsController : BaseController
@@ -34,7 +36,7 @@
             }
 
             var invitationCodes = this.data.InvitationCodes.All()
-                .Where(i => i.CreatorId == this.CurrentUser.Id);
+                .Where(i => i.CreatorId == this.User.Identity.GetUserId());
 
             var mappedCodes = invitationCodes
                 .OrderByDescending(i => i.CreatedOn)
@@ -56,11 +58,9 @@
         public ActionResult GenerateCode()
         {
             bool areThereCodesWithinLimit = this.data.InvitationCodes.All()
-                .Where
-                (
-                    i => i.CreatorId == this.CurrentUser.Id &&
-                         i.UserId == null
-                )
+                .Where(i =>
+                        i.CreatorId == this.User.Identity.GetUserId() &&
+                        i.UserId == null)
                 .Count() >= MAX_UNUSED_CODES;
 
             if (areThereCodesWithinLimit)
@@ -72,7 +72,6 @@
             }
 
             string code;
-
             do
             {
                 code = InvitationCodeGenerator.Generate();

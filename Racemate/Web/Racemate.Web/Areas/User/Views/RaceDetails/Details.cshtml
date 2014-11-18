@@ -4,6 +4,8 @@
 @model Racemate.Web.Areas.User.ViewModels.Race.RaceDetailsViewModel
 @{
     ViewBag.Title = Model.Name;
+
+    const string Controller = "RaceDetails";
     
     // ATTENTION
     // Those bool variables have ONLY visual and representing purposes
@@ -36,7 +38,7 @@
         areThereFreePlaces &&
         !isParticipant && !isSpectator && !isKicked)
     {
-        using (Html.BeginForm("Join", "RaceDetails", FormMethod.Post, new { @class = "pull-right horizontal" }))
+        using (Html.BeginForm("Join", Controller, FormMethod.Post, new { @class = "pull-right horizontal" }))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.EncryptedId)
@@ -195,7 +197,7 @@
             <hr class="space" />
             @if (isRaceValid && isRaceUpcoming && !isParticipant && !isOrganizer && !isSpectator && !isKicked)
             {
-                using (Html.BeginForm("Spectate", "RaceDetails", FormMethod.Post))
+                using (Html.BeginForm("Spectate", Controller, FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -205,7 +207,7 @@
             }
             else if (isRaceValid && isRaceInProgress && (isParticipant || isSpectator))
             {
-                using (Html.BeginForm("AlertForPolice", "RaceDetails", FormMethod.Post))
+                using (Html.BeginForm("AlertForPolice", Controller, FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -215,7 +217,7 @@
             }
             else if (isRaceValid && isOrganizer && (isRaceUpcoming || isRaceInProgress))
             {
-                using (Html.BeginForm("Kick", "RaceDetails", FormMethod.Post))
+                using (Html.BeginForm("Kick", Controller, FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.EncryptedId)
@@ -232,7 +234,7 @@
     <h2>Set Positions</h2>
     <div id="set-positions" class="holder container">
         <div class="msg note">Please, set the finish positions and time for the racers. Be advised that the data must be confirmed from respective racer in order to be taken in count.</div>
-        @using (Html.BeginForm("Positioning", "RaceDetails", FormMethod.Post))
+        @using (Html.BeginForm("Positioning", Controller, FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.EncryptedId)
@@ -274,7 +276,7 @@
             WindowId = "leave",
             Title = "Leave Race",
             Message = String.Format("Are you sure that you want to leave \"{0}\" race?", Model.Name),
-            Controller = "RaceDetails",
+            Controller = Controller,
             Action = "Leave",
             EncryptedId = Model.EncryptedId
         })
@@ -286,7 +288,7 @@
             WindowId = "cancel",
             Title = String.Format("Cancel {0} Race", Model.Name),
             Message = "Are you sure that you want to cancel the race? Note that you can't restart it after that.",
-            Controller = "RaceDetails",
+            Controller = Controller,
             Action = "Cancel",
             EncryptedId = Model.EncryptedId
         })
@@ -298,7 +300,7 @@
             WindowId = "finish",
             Title = String.Format("Finish {0} Race", Model.Name),
             Message = "Do you want to finish (close) the race before its end time expires? Note that you can't restart it after that.",
-            Controller = "RaceDetails",
+            Controller = Controller,
             Action = "Finish",
             EncryptedId = Model.EncryptedId
         })

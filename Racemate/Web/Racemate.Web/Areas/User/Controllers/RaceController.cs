@@ -8,6 +8,8 @@
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
 
+    using Microsoft.AspNet.Identity;
+
     using Newtonsoft.Json;
 
     using Racemate.Common;
@@ -35,8 +37,10 @@
 
         public ActionResult MyRaces(int? page, string sortBy, string order)
         {
+            var userId = this.User.Identity.GetUserId();
+
             var races = this.data.Races.All()
-                .Where(r => r.OrganizerId == this.CurrentUser.Id);
+                .Where(r => r.OrganizerId == userId);
 
             return this.RaceList(races, page, sortBy, order);
         }
@@ -49,7 +53,6 @@
             if (!int.TryParse(decryptedId, out raceId))
             {
                 this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-
                 return this.Json("Invalid race ID", JsonRequestBehavior.AllowGet);
             }
 
@@ -93,12 +96,12 @@
 
                 return this.Json(new string[] { "The type field is invalid!" });
             }
-            else if (DateTime.Now > model.DateTimeOfRace)
-            {
-                this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //else if (DateTime.Now > model.DateTimeOfRace)
+            //{
+            //    this.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-                return this.Json(new string[] { "The date must be in future!" });
-            }
+            //    return this.Json(new string[] { "The date must be in future!" });
+            //}
 
             // Everything should be OK after this line
             model.Type = raceType;

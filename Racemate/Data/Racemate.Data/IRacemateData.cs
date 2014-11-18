@@ -11,29 +11,29 @@
 
         IRepository<User> Users { get; }
 
-        IRepository<InvitationCode> InvitationCodes { get; }
+        IDeletableEntityRepository<InvitationCode> InvitationCodes { get; }
 
-        IRepository<CarMake> CarMakes { get; }
+        IDeletableEntityRepository<CarMake> CarMakes { get; }
 
-        IRepository<CarModel> CarModels { get; }
+        IDeletableEntityRepository<CarModel> CarModels { get; }
 
-        IRepository<Car> Cars { get; }
+        IDeletableEntityRepository<Car> Cars { get; }
 
-        IRepository<Race> Races { get; }
+        IDeletableEntityRepository<Race> Races { get; }
 
-        IRepository<RaceType> RaceTypes { get; }
+        IDeletableEntityRepository<RaceType> RaceTypes { get; }
 
-        IRepository<RaceRoutePoint> RaceRoutePoints { get; }
+        IDeletableEntityRepository<RaceRoutePoint> RaceRoutePoints { get; }
 
-        IRepository<RaceParticipant> RaceParticipants { get; }
+        IDeletableEntityRepository<RaceParticipant> RaceParticipants { get; }
 
-        IRepository<RaceSpectator> RaceSpectators { get; }
+        IDeletableEntityRepository<RaceSpectator> RaceSpectators { get; }
 
-        IRepository<RaceChatMessage> RaceChatMessages { get; }
+        IDeletableEntityRepository<RaceChatMessage> RaceChatMessages { get; }
 
-        IRepository<Report> Reports { get; }
+        IDeletableEntityRepository<Report> Reports { get; }
 
-        IRepository<Notification> Notifications { get; }
+        IDeletableEntityRepository<Notification> Notifications { get; }
 
         int SaveChanges();
     }

@@ -1,11 +1,12 @@
 ﻿namespace Racemate.Web.Areas.User.ViewModels.Race
 {
     using System;
-    using Racemate.Data.Models;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using Racemate.Web.Infrastructure.Mapping;
     using AutoMapper;
+    using Racemate.Data.Models;
+    using Racemate.Web.Infrastructure.Mapping;
+    using Racemate.Web.Infrastructure.Validators.Attributes;
 
     public class RaceInputModel : IMapFrom<Race>, IHaveCustomMappings
     {
@@ -45,13 +46,13 @@
 
         [Display(Name = "Date and Time")]
         [Required(ErrorMessage = REQ_ERR_MSG)]
+        [DateIsInFuture]
         public DateTime DateTimeOfRace { get; set; }
 
         [Required(ErrorMessage = REQ_ERR_MSG)]
         public ICollection<RaceRoutePoint> Routepoints { get; set; }
 
         // Unserialized
-
         [Required(ErrorMessage = REQ_ERR_MSG)]
         public int TypeId { get; set; }
 

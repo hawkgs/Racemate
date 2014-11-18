@@ -28,64 +28,64 @@
             get { return this.GetRepository<User>(); }
         }
 
-        public IRepository<InvitationCode> InvitationCodes
+        public IDeletableEntityRepository<InvitationCode> InvitationCodes
         {
-            get { return this.GetRepository<InvitationCode>(); } 
+            get { return this.GetDeleteableRepository<InvitationCode>(); } 
         }
 
-        public IRepository<CarMake> CarMakes
+        public IDeletableEntityRepository<CarMake> CarMakes
         {
-            get { return this.GetRepository<CarMake>(); }
+            get { return this.GetDeleteableRepository<CarMake>(); }
         }
 
-        public IRepository<CarModel> CarModels
+        public IDeletableEntityRepository<CarModel> CarModels
         {
-            get { return this.GetRepository<CarModel>(); }
+            get { return this.GetDeleteableRepository<CarModel>(); }
         }
 
-        public IRepository<Car> Cars
+        public IDeletableEntityRepository<Car> Cars
         {
-            get { return this.GetRepository<Car>(); }
+            get { return this.GetDeleteableRepository<Car>(); }
         }
 
-        public IRepository<Race> Races
+        public IDeletableEntityRepository<Race> Races
         {
-            get { return this.GetRepository<Race>(); }
+            get { return this.GetDeleteableRepository<Race>(); }
         }
 
-        public IRepository<RaceType> RaceTypes
+        public IDeletableEntityRepository<RaceType> RaceTypes
         {
-            get { return this.GetRepository<RaceType>(); }
+            get { return this.GetDeleteableRepository<RaceType>(); }
         }
 
-        public IRepository<RaceRoutePoint> RaceRoutePoints
+        public IDeletableEntityRepository<RaceRoutePoint> RaceRoutePoints
         {
-            get { return this.GetRepository<RaceRoutePoint>(); }
+            get { return this.GetDeleteableRepository<RaceRoutePoint>(); }
         }
 
-        public IRepository<RaceParticipant> RaceParticipants
+        public IDeletableEntityRepository<RaceParticipant> RaceParticipants
         {
-            get { return this.GetRepository<RaceParticipant>(); }
+            get { return this.GetDeleteableRepository<RaceParticipant>(); }
         }
 
-        public IRepository<RaceSpectator> RaceSpectators
+        public IDeletableEntityRepository<RaceSpectator> RaceSpectators
         {
-            get { return this.GetRepository<RaceSpectator>(); }
+            get { return this.GetDeleteableRepository<RaceSpectator>(); }
         }
 
-        public IRepository<RaceChatMessage> RaceChatMessages
+        public IDeletableEntityRepository<RaceChatMessage> RaceChatMessages
         {
-            get { return this.GetRepository<RaceChatMessage>(); }
+            get { return this.GetDeleteableRepository<RaceChatMessage>(); }
         }
 
-        public IRepository<Report> Reports
+        public IDeletableEntityRepository<Report> Reports
         {
-            get { return this.GetRepository<Report>(); }
+            get { return this.GetDeleteableRepository<Report>(); }
         }
 
-        public IRepository<Notification> Notifications
+        public IDeletableEntityRepository<Notification> Notifications
         {
-            get { return this.GetRepository<Notification>(); }
+            get { return this.GetDeleteableRepository<Notification>(); }
         }
 
         public int SaveChanges()
@@ -94,6 +94,20 @@
         }
 
         private IRepository<T> GetRepository<T>()
+            where T : class
+        {
+            var typeOfRepository = typeof(T);
+
+            if (!this.repositories.ContainsKey(typeOfRepository))
+            {
+                var newRepo = Activator.CreateInstance(typeof(GenericRepository<T>), context);
+                this.repositories.Add(typeOfRepository, newRepo);
+            }
+
+            return (IRepository<T>)this.repositories[typeOfRepository];
+        }
+
+        private IDeletableEntityRepository<T> GetDeleteableRepository<T>()
             where T : class, IDeletableEntity
         {
             var typeOfRepository = typeof(T);
@@ -104,7 +118,7 @@
                 this.repositories.Add(typeOfRepository, newRepo);
             }
 
-            return (IRepository<T>)this.repositories[typeOfRepository];
+            return (IDeletableEntityRepository<T>)this.repositories[typeOfRepository];
         }
     }
 }

@@ -1,17 +1,18 @@
-﻿@model IEnumerable<Racemate.Web.Areas.User.ViewModels.Garage.CarViewModel>
+﻿@using Racemate.Web.Areas.User.ViewModels.Garage;
+@model IEnumerable<CarViewModel>
 @{
     ViewBag.Title = "Garage";
+
+    const string Controller = "Garage";
+    const int CARS_PER_ROW = 4;
+    int carCount = 0;
 }
 
 <h2>
     @ViewBag.Title
-    @Html.ActionLink("Add Car", "AddCar", "Garage", new { }, new { @class = "button green pull-right" })
+    @Html.ActionLink("Add Car", "AddCar", Controller, new { }, new { @class = "button green pull-right" })
 </h2>
 <div class="holder">
-    @{
-        const int CARS_PER_ROW = 4;
-        int carCount = 0;
-    }
     @foreach (var car in Model)
     {
         <div class="car-info container">

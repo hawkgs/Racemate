@@ -1,13 +1,15 @@
 ﻿@model Racemate.Web.Areas.User.ViewModels.Invitations.InvitationsViewModel
 @{
     ViewBag.Title = "Invitations";
+
+    const string Controller = "Invitations";
 }
 
 @Html.ValidationSummary(true, "", new { @class = "msg-list error" })
 
 <h2>
     @ViewBag.Title
-    @using (Html.BeginForm("GenerateCode", "Invitations", FormMethod.Post, new { @class = "pull-right" }))
+    @using (Html.BeginForm("GenerateCode", Controller, FormMethod.Post, new { @class = "pull-right" }))
     {
         @Html.AntiForgeryToken()
         <input type="submit" value="Generate Code" class="green" />
@@ -52,7 +54,7 @@
                 selectedClass = "current-page";
             }
             
-            @Html.ActionLink(page.ToString(), "Index", "Invitations", new { page = page }, new { @class = selectedClass })
+            @Html.ActionLink(page.ToString(), "Index", Controller, new { page = page }, new { @class = selectedClass })
         }
     </div>
 </div>
