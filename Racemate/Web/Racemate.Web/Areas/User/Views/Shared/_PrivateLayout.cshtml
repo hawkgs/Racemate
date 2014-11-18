@@ -42,7 +42,7 @@
             <div class="pull-left profile-info">
                 <div>
                     <p class="thin">@User.Identity.GetUserName()</p>
-                    <p class="header-pts">3211</p>
+                    <p class="header-pts">50</p>
                 </div>
                 <img src="~/Images/misc/avatar.png" width="38" height="38" alt="avatar" />
             </div>
@@ -99,4 +99,38 @@
 @section masterScripts {
     @Scripts.Render("~/bundles/general")
     @RenderSection("scripts", required: false)
+    
+    <!-- Under development -->
+    <script src="~/Scripts/jquery.signalR-1.1.3.min.js"></script>
+    <script src="~/signalr/hubs" type="text/javascript"></script>
+    <script>
+        $(function () {
+
+            // Proxy created on the fly
+            var notific = $.connection.notificationsHub;
+
+            // Declare a function on the job hub so the server can invoke it
+            notific.client.addNewNotification = function () {
+                getData();
+            };
+
+            // Start the connection
+            $.connection.hub.start();
+            getData();
+        });
+
+        function getData() {
+            return;
+            $.ajax({
+                method: "GET",
+                url: "/Base/Notifications",
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function () {
+                    console.log("error");
+                }
+            });
+        }
+    </script>
 }

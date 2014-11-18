@@ -15,7 +15,9 @@
         public User()
         {
             this.CreatedOn = DateTime.Now;
+            this.Points = 50;
             this.Cars = new HashSet<Car>();
+            this.Notifications = new HashSet<Notification>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
@@ -26,7 +28,6 @@
             return userIdentity;
         }
 
-        [DefaultValue(50)]
         public int Points { get; set; }
 
         public bool IsBanned { get; set; }
@@ -44,6 +45,8 @@
         public int TotalRaces { get; set; }
 
         public virtual ICollection<Car> Cars { get; set; }
+
+        public virtual ICollection<Notification> Notifications { get; set; }
 
         // Interfaces
 

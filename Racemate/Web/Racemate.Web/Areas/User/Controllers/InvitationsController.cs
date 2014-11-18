@@ -35,8 +35,9 @@
                 this.ViewData = (ViewDataDictionary)this.TempData["ViewData"];
             }
 
+            var userId = this.User.Identity.GetUserId();
             var invitationCodes = this.data.InvitationCodes.All()
-                .Where(i => i.CreatorId == this.User.Identity.GetUserId());
+                .Where(i => i.CreatorId == userId);
 
             var mappedCodes = invitationCodes
                 .OrderByDescending(i => i.CreatedOn)
@@ -57,9 +58,10 @@
         [ValidateAntiForgeryToken]
         public ActionResult GenerateCode()
         {
+            var userId = this.User.Identity.GetUserId();
             bool areThereCodesWithinLimit = this.data.InvitationCodes.All()
                 .Where(i =>
-                        i.CreatorId == this.User.Identity.GetUserId() &&
+                        i.CreatorId == userId &&
                         i.UserId == null)
                 .Count() >= MAX_UNUSED_CODES;
 
