@@ -9,7 +9,10 @@
         <li>Weight <span>@Model.Weight kg</span></li>
         <li>Torque <span>@Model.Torque N&CenterDot;m</span></li>
         <li>Aspiration <span>@Model.EngineAspiration</span></li>
-        <li>Displacement <span>@Model.EngineDisplacement cc</span></li>
+        @if (Model.EngineDisplacement.HasValue)
+        {
+            <li>Displacement <span>@Model.EngineDisplacement cc</span></li>
+        }
         <li>Year of Prod <span>@Model.Year</span></li>
     </ul>
     <div class="types">

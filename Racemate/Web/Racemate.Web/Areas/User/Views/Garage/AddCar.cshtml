@@ -26,12 +26,7 @@
                     <p class="title">Car model and make</p>
                     <div class="col extra-margin">
                         <label for="car-makes-select">Make</label>
-                        @Html.DropDownList(
-                            "CarMakeId",
-                            Model.CarMakes.Select(p => new SelectListItem { Text = p.Name, Value = p.Id.ToString() }),
-                            String.Empty,
-                            new { id = "car-makes-select" }
-                        )
+                        @Html.DropDownList("CarMakeId", Model.CarMakes, String.Empty, new { id = "car-makes-select" })
                     </div>
                     <div class="col">
                         <label for="car-model-select">Model</label>
@@ -59,19 +54,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <p class="title">Miscellaneous (optional)</p>
+                    <p class="title">Miscellaneous</p>
                     <div class="col">
                         @Html.LabelFor(m => m.EngineDisplacement)
                         @Html.EditorFor(m => m.EngineDisplacement) cc
                     </div>
                     <div class="col">
-                        <label for="year">Year of Production</label>
-                        <select id="year" name="YearOfProduction">
-                        @for (int year = DateTime.Now.Year; year >= Model.MinimalCarYear; year--)
-                        {
-                            <option value="@year">@year</option>
-                        }
-                        </select>
+                        @Html.LabelFor(m => m.Year)
+                        @Html.DropDownListFor(m => m.Year, Model.YearList, String.Empty)
                     </div>
                 </div>
                 <div class="row">

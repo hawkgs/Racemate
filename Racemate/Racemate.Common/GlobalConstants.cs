@@ -8,5 +8,7 @@
 
         public const string USER_AREA = "User";
         public const string ADMIN_AREA = "Administration";
+
+        public const int MIN_CAR_YEAR = 1925;
     }
 }

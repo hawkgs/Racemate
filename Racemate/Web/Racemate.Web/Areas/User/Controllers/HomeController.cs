@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web.Caching;
     using System.Web.Mvc;
 
     using AutoMapper.QueryableExtensions;
@@ -11,6 +10,8 @@
     using Racemate.Data;
     using Racemate.Web.Areas.User.ViewModels.Home;
     using Racemate.Web.Controllers.Common;
+    using Racemate.Web.Infrastructure.Caching;
+    using Racemate.Web.Infrastructure.Caching.Contracts;
 
     [Authorize]
     public class HomeController : BaseController
@@ -21,7 +22,13 @@
         public HomeController(IRacemateData data)
             : base(data)
         {
+            this.HomeMapCache = new CacheService<RaceMapDataModel>("homeMap");
+            this.TopMembersCache = new CacheService<UserThumbViewModel>("topMembers");
         }
+
+        public ICacheService<RaceMapDataModel> HomeMapCache { get; private set; }
+
+        public ICacheService<UserThumbViewModel> TopMembersCache { get; private set; }
 
         public ActionResult Index()
         {
@@ -52,64 +59,27 @@
 
         private IEnumerable<RaceMapDataModel> GetAllMapRaces()
         {
-            const int CACHE_MIN = 1;
-            const string KEY = "allRaces";
+            var allRaces = this.data.Races.All()
+                .Where(r =>
+                    (!r.IsFinished && !r.IsCanceled) &&
+                    (r.DateTimeOfRace > DateTime.Now) ||
+                    (r.DateTimeOfRace < DateTime.Now) // TODO during race
+                )
+                .Project().To<RaceMapDataModel>();
 
-            if (this.HttpContext.Cache[KEY] == null)
-            {
-                var allRaces = this.data.Races.All()
-                    .Where(r => 
-                        (!r.IsFinished && !r.IsCanceled) &&
-                        (r.DateTimeOfRace > DateTime.Now) ||
-                        (r.DateTimeOfRace < DateTime.Now) // TODO during race
-                    )
-                    .Project().To<RaceMapDataModel>()
-                    .ToList();
-
-                this.HttpContext.Cache.Insert(
-                KEY,
-                allRaces,
-                null,
-                DateTime.Now.AddMinutes(CACHE_MIN),
-                TimeSpan.Zero,
-                CacheItemPriority.Default,
-                this.OnCacheItemRemovedCallback);
-            }
-
-            return (IEnumerable<RaceMapDataModel>)this.HttpContext.Cache[KEY];
+            return this.HomeMapCache.Get(allRaces, 1);
         }
 
         private IEnumerable<UserThumbViewModel> GetTopMembers()
         {
-            const int CACHE_MIN = 60;
-            const string KEY = "topMembers";
+            var topMembers = this.data.Users.All()
+                .OrderByDescending(u => u.FirstPlaces)
+                .ThenByDescending(u => u.SecondPlaces)
+                .ThenByDescending(u => u.ThirdPlaces)
+                .Take(TOP_MEMBERS_NUM)
+                .Project().To<UserThumbViewModel>();
 
-            if (this.HttpContext.Cache[KEY] == null)
-            {
-                var topMembers = this.data.Users.All()
-                    .OrderByDescending(u => u.FirstPlaces)
-                    .ThenByDescending(u => u.SecondPlaces)
-                    .ThenByDescending(u => u.ThirdPlaces)
-                    .Take(TOP_MEMBERS_NUM)
-                    .Project().To<UserThumbViewModel>()
-                    .ToList(); // In order to cache the result not the IQueryable
-
-                this.HttpContext.Cache.Insert(
-                KEY,
-                topMembers,
-                null,
-                DateTime.Now.AddMinutes(CACHE_MIN),
-                TimeSpan.Zero,
-                CacheItemPriority.Default,
-                this.OnCacheItemRemovedCallback);
-            }
-
-            return (IEnumerable<UserThumbViewModel>)this.HttpContext.Cache[KEY];
-        }
-
-        private void OnCacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
-        {
-            // Cache item removed
+            return this.TopMembersCache.Get(topMembers, 60);
         }
 
         #endregion

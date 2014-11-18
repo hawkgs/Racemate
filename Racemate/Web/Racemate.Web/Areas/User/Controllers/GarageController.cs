@@ -15,21 +15,32 @@
     using Racemate.Data.Models;
     using Racemate.Web.Areas.User.ViewModels.Garage;
     using Racemate.Web.Controllers.Common;
+    using Racemate.Common;
+
+    using Racemate.Web.Infrastructure.Caching.Contracts;
+    using Racemate.Web.Infrastructure.Caching;
 
     [Authorize]
     public class GarageController : BaseController
     {
-        private const int MIN_CAR_YEAR = 1925;
-
         public GarageController(IRacemateData data)
             : base(data)
         {
+            this.CarMakesCacheService = new CacheService<CarMake>("carMakes");
+            this.RaceTypesCacheService = new CacheService<RaceType>("raceTypes");
         }
+
+        public ICacheService<CarMake> CarMakesCacheService { get; private set; }
+
+        public ICacheService<RaceType> RaceTypesCacheService { get; private set; }
+
 
         public ActionResult Index()
         {
+            var userId = this.User.Identity.GetUserId();
+
             var cars = this.data.Cars.All()
-                .Where(c => c.OwnerId == this.User.Identity.GetUserId())
+                .Where(c => c.OwnerId == userId)
                 .Project().To<CarViewModel>();
 
             return this.View(cars);
@@ -37,12 +48,8 @@
 
         public ActionResult AddCar()
         {
-            var model = new AddCarViewModel()
-            {
-                RaceTypesList = this.BuildRaceTypeMultiSelect(),
-                CarMakes = this.GetCarMakes(),
-                MinimalCarYear = MIN_CAR_YEAR
-            };
+            var model = new AddCarViewModel();
+            this.AttachContentToModel(model);
 
             return this.View(model);
         }
@@ -52,7 +59,7 @@
         public ActionResult AddCar(AddCarViewModel model)
         {
             int carModelId;
-            int year;
+            bool isValid = true;
             CarModel carModel = null;
             var raceTypes = this.ParseRaceTypes(model.SelectedRaceTypes);
 
@@ -61,37 +68,28 @@
                 carModel = this.data.CarModels.GetById(carModelId);
             }
 
-            // TODO: Fix that shit
             if (carModel == null)
             {
-                this.ModelState.AddModelError("", "The car make and/or model are invalid!");
-
-                this.AttachContentToModel(model);
-                return this.View(model);
+                this.ModelState.AddModelError(String.Empty, "The car make and/or model are invalid!");
+                isValid = false;
             }
             else if (raceTypes.Count == 0)
             {
-                this.ModelState.AddModelError("", "The selected race type(s) are invalid!");
-
-                this.AttachContentToModel(model);
-                return this.View(model);
-            }
-            else if (!int.TryParse(this.Request["YearOfProduction"], out year))
-            {
-                this.ModelState.AddModelError("", "The provided year is invalid!");
-
-                this.AttachContentToModel(model);
-                return this.View(model);
+                this.ModelState.AddModelError(String.Empty, "The selected race type(s) are invalid!");
+                isValid = false;
             }
             else if (!this.ModelState.IsValid)
+            {
+                isValid = false;
+            }
+
+            if (!isValid)
             {
                 this.AttachContentToModel(model);
                 return this.View(model);
             }
 
             var car = Mapper.Map<AddCarViewModel, Car>(model);
-
-            car.Year = year.ToString();            
             car.Owner = this.CurrentUser;
             car.Model = carModel;
             car.RaceTypes = raceTypes;
@@ -116,12 +114,59 @@
         private void AttachContentToModel(AddCarViewModel model)
         {
             model.RaceTypesList = this.BuildRaceTypeMultiSelect();
-            model.CarMakes = this.GetCarMakes();
+            model.CarMakes = this.BuildCarMakesSelect();
+            model.YearList = this.BuildYearSelect();
+        }
+
+        // Selects
+
+        private IEnumerable<SelectListItem> BuildRaceTypeMultiSelect()
+        {
+            var raceTypes = this.GetRaceTypes()
+                .Select(r => new SelectListItem()
+                {
+                    Text = r.Name,
+                    Value = r.Id.ToString()
+                });
+
+            return raceTypes;
+        }
+
+        private IEnumerable<SelectListItem> BuildCarMakesSelect()
+        {
+            var carMakes = this.GetCarMakes()
+                .Select(m => new SelectListItem()
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name
+                });
+
+            return carMakes;
+        }
+
+        private IEnumerable<SelectListItem> BuildYearSelect()
+        {
+            var yearList = new List<SelectListItem>();
+
+            for (int year = DateTime.Now.Year; year >= GlobalConstants.MIN_CAR_YEAR; year--)
+            {
+                string strYear = year.ToString();
+
+                yearList.Add(new SelectListItem()
+                {
+                    Value = strYear,
+                    Text = strYear
+                });
+            }
+
+            return yearList;
         }
 
         private ICollection<RaceType> ParseRaceTypes(IEnumerable<string> types)
         {
-            var raceTypes = this.GetRaceTypes();
+            // The race types cannot be cached here since the Entity Change Tracker
+            // will differ from the session one => exception
+            var raceTypes = this.data.RaceTypes.All();
             var carRaceTypes = new HashSet<RaceType>();
 
             foreach (string enumId in types)
@@ -143,73 +188,20 @@
             return carRaceTypes;
         }
 
-        private IEnumerable<SelectListItem> BuildRaceTypeMultiSelect()
-        {
-
-            var raceTypes = this.data.RaceTypes.All();
-            var raceTypesList = new List<SelectListItem>();
-
-            foreach (var raceType in raceTypes)
-            {
-                raceTypesList.Add(new SelectListItem()
-                {
-                    Text = raceType.Name,
-                    Value = raceType.Id.ToString()
-                });
-            }
-
-            return raceTypesList;
-        }
+        // Cache
 
         private IEnumerable<RaceType> GetRaceTypes()
         {
-            return this.data.RaceTypes.All().ToList();
+            var raceTypes = this.data.RaceTypes.All();
 
-            const int CACHE_HR = 24;
-
-            if (this.HttpContext.Cache["raceTypes"] == null)
-            {
-                var raceTypes = this.data.RaceTypes.All().ToList();
-
-                this.HttpContext.Cache.Insert(
-                "raceTypes",
-                raceTypes,
-                null,
-                DateTime.Now.AddHours(CACHE_HR),
-                TimeSpan.Zero,
-                CacheItemPriority.Default,
-                this.OnCacheItemRemovedCallback);
-            }
-
-            return (IEnumerable<RaceType>)this.HttpContext.Cache["raceTypes"];
+            return this.RaceTypesCacheService.Get(raceTypes, 60);
         }
 
         private IEnumerable<CarMake> GetCarMakes()
         {
-            return this.data.CarMakes.All().ToList();
+            var carMakes = this.data.CarMakes.All();
 
-            const int CACHE_MIN = 30;
-
-            if (this.HttpContext.Cache["carMakes"] == null)
-            {
-                var carMakes = this.data.CarMakes.All().ToList();
-
-                this.HttpContext.Cache.Insert(
-                "carMakes",
-                carMakes,
-                null,
-                DateTime.Now.AddMinutes(CACHE_MIN),
-                TimeSpan.Zero,
-                CacheItemPriority.Default,
-                this.OnCacheItemRemovedCallback);
-            }
-
-            return (IEnumerable<CarMake>)this.HttpContext.Cache["carMakes"];
-        }
-
-        private void OnCacheItemRemovedCallback(string key, object value, CacheItemRemovedReason reason)
-        {
-            // Cache item removed
+            return this.CarMakesCacheService.Get(carMakes, 60);
         }
 
         #endregion
