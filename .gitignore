@@ -5,6 +5,7 @@
 
 # Build results
 
+.idea/
 kendo/
 Libraries/
 packages/
